@@ -3,6 +3,7 @@ import React, { Component, PropTypes } from 'react';
 import ReactDOM from 'react-dom';
 import autobind from 'autobind-decorator';
 import FormValidationManager from './manager';
+import invariant from 'invariant';
 
 export default class InputWrapper extends Component {
   static propTypes = {
@@ -35,6 +36,12 @@ export default class InputWrapper extends Component {
   }
 
   componentWillMount() {
+    const { children } = this.props;
+    invariant(
+      children && children.props && children.props.name,
+      'A child component with a "name" property is required'
+    );
+
     this.props.manager.registerValidatedComponent(this);
   }
 
