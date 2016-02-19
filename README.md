@@ -14,6 +14,15 @@ form markup with validation rules.
 * Async-compatible validation functions enabling remote tests
 
 
+## Example Markup
+
+```
+<Validated manager={validationManager} validators={[required(), minLength(10)]}>
+  <input type="text" name="example" />
+</Validated>
+```
+
+
 ## Work in Progress
 
 Lot's to do! Maybe I'll get something useful out of it :)
