@@ -29,21 +29,21 @@ export default class FormManager {
   getFieldValidationMessage(name) {
     let component = null;
     this.components.forEach((current) => {
-      if (current.props.children.props.name === name) {
+      if (current.getName() === name) {
         component = current;
       }
     });
 
     // TODO: it's gross that this looks into the component state:
     if (component) {
-      return component.state.validationMessage;
+      return component.getValidationStateMessage();
     }
   }
 
   getIsAnyFieldInvalid() {
     let isValid = true;
     this.components.forEach((component) => {
-      if (isValid === true && component.state.valid === false) {
+      if (isValid === true && component.getValidationState() === false) {
         isValid = false;
       }
     });
