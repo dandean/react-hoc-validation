@@ -56,10 +56,22 @@ export default class InputWrapper extends Component {
       }
 
       if (this.listenerCount('validationChange') > 0) {
-        const name = ReactDOM.findDOMNode(this).name;
+        const name = this.getName();
         this.emit('validationChange', name, this.state.valid, nextState.valid);
       }
     }
+  }
+
+  getName() {
+    return this.props.children.props.name;
+  }
+
+  getValidationState() {
+    return this.state.valid;
+  }
+
+  getValidationStateMessage() {
+    return this.state.validationMessage;
   }
 
   @autobind
