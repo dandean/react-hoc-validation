@@ -3,8 +3,27 @@ import autobind from 'autobind-decorator';
 export default class FormManager {
   // TODO: Use a 'name' based map for quicker lookup
   components = new Set([]);
+  radios = {};
 
   state = {};
+
+  registerValidatedRadioComponent(component) {
+    const name = component.getName();
+
+    if (!this.radios[name]) {
+      this.radios[name] = new Set([]);
+    }
+
+    this.radios[name].add(component);
+  }
+
+  unregisterValidatedRadioComponent(component) {
+    const name = component.getName();
+
+    if (this.radios[name] && this.radios[name].has(component)) {
+      this.radios[name].delete(component);
+    }
+  }
 
   registerValidatedComponent(component) {
     component.addListener('validationChange', this.handleValidationChange);
