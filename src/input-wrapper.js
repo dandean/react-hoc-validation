@@ -42,6 +42,15 @@ export default class InputWrapper extends Component {
       'A child component with a "name" property is required'
     );
 
+    if (children.type === 'input' && children.props.type === 'checkbox') {
+      // Checkbox inputs must have a value attribute set:
+      // https://www.w3.org/TR/html4/interact/forms.html#adef-value-INPUT
+      invariant(
+        children.props && children.props.value,
+        `Inputs of type checkbox must have a value property`
+      );
+    }
+
     this.props.manager.registerValidatedComponent(this);
   }
 
@@ -105,11 +114,17 @@ export default class InputWrapper extends Component {
       clearTimeout(this.onChangeTimeout);
     }
 
-    // Run through all validation routines...
-    const value = ReactDOM.findDOMNode(this).value;
+    // TODO: Should this use `this.props.children.props.value`?
+    const element = ReactDOM.findDOMNode(this);
+    let value = element.value;
 
+    // Clear checkbox value when checkbox is not checked:
+    if (element.type === 'checkbox' && element.checked === false) {
+      value = '';
+    }
+
+    // Run through all validation routines...
     const { validators } = this.props;
-    const count = validators.length;
     let index = 0;
 
     // Valid until any validators fail:
