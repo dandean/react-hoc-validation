@@ -1,17 +1,40 @@
 import autobind from 'autobind-decorator';
+import invariant from 'invariant';
 
 export default class FormManager {
   components = new Map([]);
   state = {};
 
   registerValidatedComponent(component) {
-    component.addListener('validationChange', this.handleValidationChange);
-    this.components.set(component.getName(), component);
+    const name = component.getName();
+
+    if (component.type === 'RadioWrapper') {
+      const group = this.components.get(name);
+      if (group === undefined) {
+        throw new Error('RadioWrapper requires a RadioGroup with the same name')
+      }
+      group.registerValidatedComponent(component);
+
+    } else {
+      component.addListener('validationChange', this.handleValidationChange);
+      this.components.set(component.getName(), component);
+    }
   }
 
   unregisterValidatedComponent(component) {
-    component.removeListener('validationChange', this.handleValidationChange);
-    this.components.delete(component.getName());
+    if (component.type === 'RadioWrapper') {
+      const group = this.components.get(name);
+
+      // RadioGroup will unmount before RadioWrapper if nested, so no need to
+      // unregister if it's already gone:
+      if (group) {
+        group.unregisterValidatedComponent(component);
+      }
+
+    } else {
+      component.removeListener('validationChange', this.handleValidationChange);
+      this.components.delete(component.getName());
+    }
   }
 
   @autobind
