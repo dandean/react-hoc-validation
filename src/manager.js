@@ -1,38 +1,17 @@
 import autobind from 'autobind-decorator';
 
 export default class FormManager {
-  // TODO: Use a 'name' based map for quicker lookup
-  components = new Set([]);
-  radios = {};
-
+  components = new Map([]);
   state = {};
-
-  registerValidatedRadioComponent(component) {
-    const name = component.getName();
-
-    if (!this.radios[name]) {
-      this.radios[name] = new Set([]);
-    }
-
-    this.radios[name].add(component);
-  }
-
-  unregisterValidatedRadioComponent(component) {
-    const name = component.getName();
-
-    if (this.radios[name] && this.radios[name].has(component)) {
-      this.radios[name].delete(component);
-    }
-  }
 
   registerValidatedComponent(component) {
     component.addListener('validationChange', this.handleValidationChange);
-    this.components.add(component);
+    this.components.set(component.getName(), component);
   }
 
   unregisterValidatedComponent(component) {
     component.removeListener('validationChange', this.handleValidationChange);
-    this.components.delete(component);
+    this.components.delete(component.getName());
   }
 
   @autobind
@@ -46,14 +25,7 @@ export default class FormManager {
   }
 
   getFieldValidationMessage(name) {
-    let component = null;
-    this.components.forEach((current) => {
-      if (current.getName() === name) {
-        component = current;
-      }
-    });
-
-    // TODO: it's gross that this looks into the component state:
+    const component = this.components.get(name);
     if (component) {
       return component.getValidationStateMessage();
     }
@@ -61,7 +33,7 @@ export default class FormManager {
 
   getIsAnyFieldInvalid() {
     let isValid = true;
-    this.components.forEach((component) => {
+    this.components.forEach((component, name) => {
       if (isValid === true && component.getValidationState() === false) {
         isValid = false;
       }
@@ -82,7 +54,7 @@ export default class FormManager {
       }
     }
 
-    this.components.forEach((component) => {
+    this.components.forEach((component, name) => {
       component.validate(done);
     });
   }
