@@ -61,6 +61,8 @@ export default class RadioWrapper extends Component {
 
   render() {
     let handleChange = this.handleChange;
+
+    // Handler attached directly to the <input>:
     const originalOnChange = this.props.children.props.onChange;
 
     if (originalOnChange) {
