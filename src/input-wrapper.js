@@ -6,14 +6,52 @@ import invariant from 'invariant';
 
 export default class InputWrapper extends Component {
   static propTypes = {
+    /**
+     * Because this is a higher order component, only a single child component
+     * is allowed, and it is required.
+     *
+     * @type {Component}
+     */
     children: PropTypes.element.isRequired,
 
+    /**
+     * The FormManager instance, which is required in order to enable validation.
+     *
+     * @type {FormManager}
+     */
     manager: PropTypes.instanceOf(FormValidationManager).isRequired,
+
+    /**
+     * An array of validation functions. All functions:
+     *
+     * * take `value` as the first argument
+     * * take `callback` as the second argument
+     * * pass true if valid or a string if invalid to the callback
+     *
+     * @type {Array}
+     */
     validators: PropTypes.arrayOf(PropTypes.func),
 
+    /**
+     * If the component's validators should run when the input's value changes.
+     *
+     * @type {Boolean}
+     */
     validateOnChange: PropTypes.bool,
+
+    /**
+     * How long (in milliseconds) to wait after the value has changed before
+     * running validators.
+     *
+     * @type {Number}
+     */
     validateOnChangeDelay: PropTypes.number,
 
+    /**
+     * Handler to call when validation state changes.
+     *
+     * @type {Function}
+     */
     onValidationChange: PropTypes.func
   };
 
