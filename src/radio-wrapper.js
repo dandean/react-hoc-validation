@@ -1,5 +1,6 @@
 import { EventEmitter } from 'events';
 import React, { Component, PropTypes } from 'react';
+import ReactDOM from 'react-dom';
 import autobind from 'autobind-decorator';
 import FormValidationManager from './manager';
 import invariant from 'invariant';
@@ -44,13 +45,18 @@ export default class RadioWrapper extends Component {
     return this.props.children.props.name;
   }
 
+  getValue() {
+    return this.props.children.props.value;
+  }
+
+  getIsChecked() {
+    const element = ReactDOM.findDOMNode(this);
+    return element.checked;
+  }
+
   @autobind
   handleChange(event) {
-    this.emit('change');
-
-    // TODO:
-    // manager should have RadioGroup listen to this change event
-    // RadioGroup should validate itself against this
+    this.emit('change', event);
   }
 
   render() {

@@ -31,11 +31,18 @@ export default class RadioGroup extends Component {
 
   onChangeTimeout = null;
 
+  constructor(...args) {
+    super(...args);
+    EventEmitter.call(this);
+  }
+
   registerValidatedComponent(radio) {
+    radio.addListener('change', this.handleChange);
     this.radios.add(radio);
   }
 
   unregisterValidatedComponent(radio) {
+    radio.removeListener('change', this.handleChange);
     this.radios.delete(radio);
   }
 
@@ -47,8 +54,49 @@ export default class RadioGroup extends Component {
     this.props.manager.unregisterValidatedComponent(this);
   }
 
+  componentWillUpdate(nextProps, nextState) {
+    if (this.state.valid !== nextState.valid) {
+      if (this.props.onValidationChange) {
+        this.props.onValidationChange(this.state.valid, nextState.valid);
+      }
+
+      if (this.listenerCount('validationChange') > 0) {
+        const name = this.getName();
+        this.emit('validationChange', name, this.state.valid, nextState.valid);
+      }
+    }
+  }
+
+  @autobind
+  handleChange(event) {
+    if (this.state.valid !== null) {
+      this.setState({
+        valid: null,
+        validationMessage: null
+      });
+    }
+
+    clearTimeout(this.onChangeTimeout);
+
+    if (this.props.validateOnChange) {
+      this.onChangeTimeout = setTimeout(this.validate, this.props.validateOnChangeDelay);
+    }
+  }
+
   getName() {
     return this.props.name;
+  }
+
+  getValue() {
+    let value = null;
+
+    this.radios.forEach((radio) => {
+      if (value === null && radio.getIsChecked()) {
+        value = radio.getValue();
+      }
+    });
+
+    return value;
   }
 
   getValidationState() {
@@ -67,8 +115,7 @@ export default class RadioGroup extends Component {
       clearTimeout(this.onChangeTimeout);
     }
 
-    // TODO: find the value from associated radios...
-    let value = null;
+    const value = this.getValue();
 
     // Run through all validation routines...
     const { validators } = this.props;
