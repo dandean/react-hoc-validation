@@ -42,8 +42,10 @@ export default class RadioGroup extends Component {
   }
 
   unregisterValidatedComponent(radio) {
-    radio.removeListener('change', this.handleChange);
-    this.radios.delete(radio);
+    if (radio) {
+      radio.removeListener('change', this.handleChange);
+      this.radios.delete(radio);
+    }
   }
 
   componentWillMount() {
@@ -51,6 +53,9 @@ export default class RadioGroup extends Component {
   }
 
   componentWillUnmount() {
+    this.radios.forEach((radio) => {
+      this.unregisterValidatedComponent(radio);
+    });
     this.props.manager.unregisterValidatedComponent(this);
   }
 
