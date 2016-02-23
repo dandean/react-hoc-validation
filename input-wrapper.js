@@ -4,8 +4,6 @@ Object.defineProperty(exports, '__esModule', {
   value: true
 });
 
-var _createDecoratedClass = (function () { function defineProperties(target, descriptors, initializers) { for (var i = 0; i < descriptors.length; i++) { var descriptor = descriptors[i]; var decorators = descriptor.decorators; var key = descriptor.key; delete descriptor.key; delete descriptor.decorators; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor || descriptor.initializer) descriptor.writable = true; if (decorators) { for (var f = 0; f < decorators.length; f++) { var decorator = decorators[f]; if (typeof decorator === 'function') { descriptor = decorator(target, key, descriptor) || descriptor; } else { throw new TypeError('The decorator for method ' + descriptor.key + ' is of the invalid type ' + typeof decorator); } } if (descriptor.initializer !== undefined) { initializers[key] = descriptor; continue; } } Object.defineProperty(target, key, descriptor); } } return function (Constructor, protoProps, staticProps, protoInitializers, staticInitializers) { if (protoProps) defineProperties(Constructor.prototype, protoProps, protoInitializers); if (staticProps) defineProperties(Constructor, staticProps, staticInitializers); return Constructor; }; })();
-
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
 var _get = function get(_x2, _x3, _x4) { var _again = true; _function: while (_again) { var object = _x2, property = _x3, receiver = _x4; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x2 = parent; _x3 = property; _x4 = receiver; _again = true; desc = parent = undefined; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
@@ -26,10 +24,6 @@ var _reactDom = require('react-dom');
 
 var _reactDom2 = _interopRequireDefault(_reactDom);
 
-var _autobindDecorator = require('autobind-decorator');
-
-var _autobindDecorator2 = _interopRequireDefault(_autobindDecorator);
-
 var _manager = require('./manager');
 
 var _manager2 = _interopRequireDefault(_manager);
@@ -44,20 +38,59 @@ var InputWrapper = (function (_Component) {
   _createClass(InputWrapper, null, [{
     key: 'propTypes',
     value: {
+      /**
+       * Because this is a higher order component, only a single child component
+       * is allowed, and it is required.
+       *
+       * @type {Component}
+       */
       children: _react.PropTypes.element.isRequired,
 
+      /**
+       * The FormManager instance, which is required in order to enable validation.
+       *
+       * @type {FormManager}
+       */
       manager: _react.PropTypes.instanceOf(_manager2['default']).isRequired,
+
+      /**
+       * An array of validation functions. All functions:
+       *
+       * * take `value` as the first argument
+       * * take `callback` as the second argument
+       * * pass true if valid or a string if invalid to the callback
+       *
+       * @type {Array}
+       */
       validators: _react.PropTypes.arrayOf(_react.PropTypes.func),
 
+      /**
+       * If the component's validators should run when the input's value changes.
+       *
+       * @type {Boolean}
+       */
       validateOnChange: _react.PropTypes.bool,
+
+      /**
+       * How long (in milliseconds) to wait after the value has changed before
+       * running validators.
+       *
+       * @type {Number}
+       */
       validateOnChangeDelay: _react.PropTypes.number,
 
+      /**
+       * Handler to call when validation state changes.
+       *
+       * @type {Function}
+       */
       onValidationChange: _react.PropTypes.func
     },
     enumerable: true
   }, {
     key: 'defaultProps',
     value: {
+      validators: [],
       validateOnChange: true,
       validateOnChangeDelay: 500
     },
@@ -78,9 +111,12 @@ var InputWrapper = (function (_Component) {
     };
     this.onChangeTimeout = null;
     _events.EventEmitter.call(this);
+    this.handleChange = this.handleChange.bind(this);
+    this.handleBlur = this.handleBlur.bind(this);
+    this.validate = this.validate.bind(this);
   }
 
-  _createDecoratedClass(InputWrapper, [{
+  _createClass(InputWrapper, [{
     key: 'componentWillMount',
     value: function componentWillMount() {
       var children = this.props.children;
@@ -131,7 +167,6 @@ var InputWrapper = (function (_Component) {
     }
   }, {
     key: 'handleChange',
-    decorators: [_autobindDecorator2['default']],
     value: function handleChange(event) {
       if (this.state.valid !== null) {
         this.setState({
@@ -148,7 +183,6 @@ var InputWrapper = (function (_Component) {
     }
   }, {
     key: 'handleBlur',
-    decorators: [_autobindDecorator2['default']],
     value: function handleBlur(event) {
       if (this.state.valid === null) {
         this.validate();
@@ -156,7 +190,6 @@ var InputWrapper = (function (_Component) {
     }
   }, {
     key: 'validate',
-    decorators: [_autobindDecorator2['default']],
     value: function validate() {
       var _this = this;
 

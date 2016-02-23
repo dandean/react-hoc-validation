@@ -89,8 +89,10 @@ var RadioGroup = (function (_Component) {
   }, {
     key: 'unregisterValidatedComponent',
     value: function unregisterValidatedComponent(radio) {
-      radio.removeListener('change', this.handleChange);
-      this.radios['delete'](radio);
+      if (radio) {
+        radio.removeListener('change', this.handleChange);
+        this.radios['delete'](radio);
+      }
     }
   }, {
     key: 'componentWillMount',
@@ -100,6 +102,11 @@ var RadioGroup = (function (_Component) {
   }, {
     key: 'componentWillUnmount',
     value: function componentWillUnmount() {
+      var _this = this;
+
+      this.radios.forEach(function (radio) {
+        _this.unregisterValidatedComponent(radio);
+      });
       this.props.manager.unregisterValidatedComponent(this);
     }
   }, {
@@ -165,7 +172,7 @@ var RadioGroup = (function (_Component) {
     key: 'validate',
     decorators: [_autobindDecorator2['default']],
     value: function validate() {
-      var _this = this;
+      var _this2 = this;
 
       var callback = arguments.length <= 0 || arguments[0] === undefined ? function (isValid, message) {} : arguments[0];
 
@@ -188,7 +195,7 @@ var RadioGroup = (function (_Component) {
 
       var next = function next() {
         if (isValid === false || !Boolean(validators[index])) {
-          _this.setState({
+          _this2.setState({
             valid: isValid,
             validationMessage: message
           });

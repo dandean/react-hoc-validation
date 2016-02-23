@@ -56,6 +56,7 @@ export default class InputWrapper extends Component {
   };
 
   static defaultProps = {
+    validators: [],
     validateOnChange: true,
     validateOnChangeDelay: 500
   };
