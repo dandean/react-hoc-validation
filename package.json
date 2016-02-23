@@ -13,6 +13,9 @@
     "type": "git",
     "url": "https://github.com/dandean/react-hoc-validation.git"
   },
+  "dependencies": {
+    "invariant": "^2.2.0"
+  },
   "peerDependencies": {
     "react": "^0.14",
     "react-dom": "^0.14"
@@ -36,8 +39,5 @@
   },
   "babel": {
     "stage": 0
-  },
-  "dependencies": {
-    "invariant": "^2.2.0"
   }
 }
