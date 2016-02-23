@@ -14,15 +14,17 @@ form markup with validation rules.
 * Async-compatible validation functions enabling remote tests
 
 
-## Example Markup
+## Examples
 
-```
-<Validated manager={validationManager} validators={[required(), minLength(10)]}>
-  <input type="text" name="example" />
-</Validated>
-```
+To run the examples in your development environment:
+
+1. Clone this repo
+2. Run `npm install`
+3. Start the development server with `npm start`
+4. Point your browser to http://localhost:8080
 
 
 ## Work in Progress
 
-Lot's to do! Maybe I'll get something useful out of it :)
+It should go without saying on a project this new that it is a work in progress.
+There's lots to do!
