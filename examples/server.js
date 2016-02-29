@@ -18,8 +18,9 @@ var fs = require('fs')
 var path = require('path')
 
 fs.readdirSync(__dirname).forEach(function (file) {
-  if (fs.statSync(path.join(__dirname, file)).isDirectory())
+  if (fs.statSync(path.join(__dirname, file)).isDirectory()) {
     app.use(rewrite('/' + file + '/*', '/' + file + '/index.html'))
+  }
 })
 
 app.use(express.static(__dirname))
