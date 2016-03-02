@@ -63,7 +63,8 @@ export default class InputWrapper extends Component {
 
   state = {
     valid: null,
-    validationMessage: null
+    validationMessage: null,
+    isValidating: false
   };
 
   onChangeTimeout = null;
@@ -124,6 +125,10 @@ export default class InputWrapper extends Component {
     return this.state.validationMessage;
   }
 
+  getIsValidating() {
+    return this.state.isValidating;
+  }
+
   handleChange(event) {
     if (this.state.valid !== null) {
       this.setState({
@@ -152,6 +157,8 @@ export default class InputWrapper extends Component {
       clearTimeout(this.onChangeTimeout);
     }
 
+    this.setState({ isValidating: true });
+
     // TODO: Should this use `this.props.children.props.value`?
     const element = ReactDOM.findDOMNode(this);
     let value = element.value;
@@ -173,7 +180,8 @@ export default class InputWrapper extends Component {
       if (isValid === false || !Boolean(validators[index])) {
         this.setState({
           valid: isValid,
-          validationMessage: message
+          validationMessage: message,
+          isValidating: false
         });
         callback(isValid, message);
         return;

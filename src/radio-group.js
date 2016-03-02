@@ -23,7 +23,8 @@ export default class RadioGroup extends Component {
 
   state = {
     valid: null,
-    validationMessage: null
+    validationMessage: null,
+    isValidating: false
   };
 
   radios = new Set([]);
@@ -112,12 +113,18 @@ export default class RadioGroup extends Component {
     return this.state.validationMessage;
   }
 
+  getIsValidating() {
+    return this.state.isValidating;
+  }
+
   validate(callback = (isValid, message)=>{}) {
     // Clear timeout in case validate() was called while a change was queued.
     // This will prevent a potential double validation.
     if (this.props.validateOnChange) {
       clearTimeout(this.onChangeTimeout);
     }
+
+    this.setState({ isValidating: true });
 
     const value = this.getValue();
 
@@ -133,7 +140,8 @@ export default class RadioGroup extends Component {
       if (isValid === false || !Boolean(validators[index])) {
         this.setState({
           valid: isValid,
-          validationMessage: message
+          validationMessage: message,
+          isValidating: false
         });
         callback(isValid, message);
         return;
