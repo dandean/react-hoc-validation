@@ -1,7 +1,6 @@
 import { EventEmitter } from 'events';
 import React, { Component, PropTypes } from 'react';
 import ReactDOM from 'react-dom';
-import autobind from 'autobind-decorator';
 import FormValidationManager from './manager';
 import invariant from 'invariant';
 
@@ -34,6 +33,8 @@ export default class RadioGroup extends Component {
   constructor(...args) {
     super(...args);
     EventEmitter.call(this);
+    this.handleChange = this.handleChange.bind(this);
+    this.validate = this.validate.bind(this);
   }
 
   registerValidatedComponent(radio) {
@@ -72,7 +73,6 @@ export default class RadioGroup extends Component {
     }
   }
 
-  @autobind
   handleChange(event) {
     if (this.state.valid !== null) {
       this.setState({
@@ -112,7 +112,6 @@ export default class RadioGroup extends Component {
     return this.state.validationMessage;
   }
 
-  @autobind
   validate(callback = (isValid, message)=>{}) {
     // Clear timeout in case validate() was called while a change was queued.
     // This will prevent a potential double validation.
