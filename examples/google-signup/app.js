@@ -93,21 +93,21 @@ class App extends Component {
           <div className="clearfix">
             <div className="sign-up">
               <div className="signup-box">
-                <FormWrapper manager={this.manager}>
+                <FormWrapper manager={this.manager} onValidationChange={this.handleValidationChange.bind(this)}>
                 <form className="createaccount-form" id="createaccount" name="createaccount" onSubmit={this.handleSubmit.bind(this)}>
                   <div className="form-element multi-field name" id="name-form-element">
                     <fieldset>
                       <legend><strong>Name</strong></legend>
                       <label id="firstname-label" className="firstname">
                         <strong>First name</strong>
-                        <InputWrapper manager={this.manager} validators={[required]} onValidationChange={this.handleValidationChange.bind(this)}>
+                        <InputWrapper manager={this.manager} validators={[required]}>
                           <input className={errorClass('FirstName')} type="text" name="FirstName" id="FirstName" spellCheck="false" n="1" placeholder="First" />
                         </InputWrapper>
                       </label>
                       
                       <label id="lastname-label" className="lastname">
                         <strong>Last name</strong>
-                        <InputWrapper manager={this.manager} validators={[required]} onValidationChange={this.handleValidationChange.bind(this)}>
+                        <InputWrapper manager={this.manager} validators={[required]}>
                           <input className={errorClass('LastName')} type="text" name="LastName" id="LastName" spellCheck="false" n="2" placeholder="Last" />
                         </InputWrapper>
                       </label>
@@ -119,7 +119,7 @@ class App extends Component {
                   <div className="form-element email-address" id="gmail-address-form-element">
                     <label id="gmail-address-label">
                       <strong>Choose your username</strong>
-                      <InputWrapper manager={this.manager} validators={[required, username]} onValidationChange={this.handleValidationChange.bind(this)}>
+                      <InputWrapper manager={this.manager} validators={[required, username]}>
                         <input className={errorClass('GmailAddress')} type="text" maxLength="30" autoComplete="off" name="GmailAddress" id="GmailAddress" spellCheck="false" n="3" />
                       </InputWrapper>
                       <span className="atgmail">@gmail.com</span>
@@ -141,7 +141,7 @@ class App extends Component {
                   <div className="form-element" id="password-form-element">
                     <label id="password-label">
                       <strong>Create a password</strong>
-                      <InputWrapper manager={this.manager} validators={[required]} onValidationChange={this.handleValidationChange.bind(this)}>
+                      <InputWrapper manager={this.manager} validators={[required]}>
                         <input ref="password" type="password" name="Passwd" id="Passwd" n="4"/>
                       </InputWrapper>
                     </label>
@@ -151,7 +151,7 @@ class App extends Component {
                   <div className="form-element" id="confirm-password-form-element">
                     <label id="confirm-password-label">
                       <strong>Confirm your password</strong>
-                      <InputWrapper manager={this.manager} validators={[required, this.passwordConfirmation]} onValidationChange={this.handleValidationChange.bind(this)}>
+                      <InputWrapper manager={this.manager} validators={[required, this.passwordConfirmation]}>
                         <input type="password" name="PasswdAgain" id="PasswdAgain" n="5"/>
                       </InputWrapper>
                     </label>
@@ -163,7 +163,7 @@ class App extends Component {
                       <legend><strong id="BirthdayLabel">Birthday</strong></legend>
                       <label id="month-label" className="month">
                         <span id="BirthMonth">
-                          <InputWrapper manager={this.manager} validators={[required]} onValidationChange={this.handleValidationChange.bind(this)}>
+                          <InputWrapper manager={this.manager} validators={[required]}>
                             <select name="BirthMonth" className={'goog-inline-block ' + errorClass('BirthMonth')}>
                               <option value="">Month</option>
                               <option value="1">January</option>
@@ -185,14 +185,14 @@ class App extends Component {
 
                       <label id="day-label" className="day">
                         <strong>Day</strong>
-                        <InputWrapper manager={this.manager} validators={[required]} onValidationChange={this.handleValidationChange.bind(this)}>
+                        <InputWrapper manager={this.manager} validators={[required]}>
                           <input type="text" maxLength="2" name="BirthDay" id="BirthDay" placeholder="Day" className={errorClass('BirthDay')}/>
                         </InputWrapper>
                       </label>
 
                       <label id="year-label" className="year">
                         <strong>Year</strong>
-                        <InputWrapper manager={this.manager} validators={[required]} onValidationChange={this.handleValidationChange.bind(this)}>
+                        <InputWrapper manager={this.manager} validators={[required]}>
                           <input type="text" maxLength="4" name="BirthYear" id="BirthYear" placeholder="Year" className={errorClass('BirthYear')} />
                         </InputWrapper>
                       </label>
@@ -211,7 +211,7 @@ class App extends Component {
 
                   <div className="form-element terms-of-service" id="termsofservice-form-element">
                     <label id="termsofservice-label">
-                      <InputWrapper manager={this.manager} validators={[termsOfService]} onValidationChange={this.handleValidationChange.bind(this)}>
+                      <InputWrapper manager={this.manager} validators={[termsOfService]}>
                         <input className={errorClass('TermsOfService')} type="checkbox" value="yes" name="TermsOfService" id="TermsOfService"/>
                       </InputWrapper>
                       <span id="terms-of-service-label">
