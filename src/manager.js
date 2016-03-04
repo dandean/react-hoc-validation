@@ -1,10 +1,12 @@
+import { EventEmitter } from 'events';
+
 /**
  * @class FormManager
  *
  * The FormManager is the central point of coordination between the various
  * components in this tool.
  */
-export default class FormManager {
+export default class FormManager extends EventEmitter {
   /**
    * Map of React HOC components by name attribute.
    *
@@ -27,7 +29,10 @@ export default class FormManager {
    */
   state = {};
 
+  validationChangeTimeout = null;
+
   constructor() {
+    super();
     this.handleValidationChange = this.handleValidationChange.bind(this);
   }
 
@@ -87,6 +92,9 @@ export default class FormManager {
    */
   handleValidationChange(name, previousState, nextState) {
     this.state[name] = nextState;
+
+    clearTimeout(this.validationChangeTimeout);
+    this.validationChangeTimeout = setTimeout(() => this.emit('change'), 0);
   }
 
   /**
