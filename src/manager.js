@@ -1,5 +1,7 @@
 import { EventEmitter } from 'events';
 
+const isValidatingKey = Symbol();
+
 /**
  * @class FormManager
  *
@@ -33,6 +35,7 @@ export default class FormManager extends EventEmitter {
 
   constructor() {
     super();
+    this[isValidatingKey] = false;
     this.handleValidationChange = this.handleValidationChange.bind(this);
   }
 
@@ -137,18 +140,43 @@ export default class FormManager extends EventEmitter {
     return isValid === false;
   }
 
+  getIsValidating() {
+    // If form is validating, return `true` early:
+    if (this[isValidatingKey] === true){
+      return true;
+    }
+
+    // Otherwise, we have to iterate all validation components until we either
+    // find one or run out:
+
+    let isValidating = false;
+
+    for (let [name, component] of this.components.entries()) {
+      if (component.getIsValidating() === true) {
+        isValidating = true;
+        break;
+      }
+    }
+
+    return isValidating;
+  }
+
   /**
    * Validates every registered field
    *
    * @param {Function} [callback] Called when all fields have been validated
    */
   validate(callback = ()=>{}) {
+    this[isValidatingKey] = true;
+
     const count = this.components.size;
     let completed = 0;
 
     const done = (result) => {
       completed++;
       if (count === completed) {
+        this[isValidatingKey] = false;
+
         // Wait a tick to allow event emitter handlers to complete
         process.nextTick(callback);
       }
