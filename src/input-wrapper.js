@@ -164,7 +164,7 @@ export default class InputWrapper extends Component {
       validators[index](value, (result) => {
         index++;
 
-        if (result !== true) {
+        if (Boolean(result)) {
           isValid = false;
           message = result;
         }

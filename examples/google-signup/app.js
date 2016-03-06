@@ -9,21 +9,32 @@ import {
 } from 'react-hoc-validation';
 
 function required(value, callback) {
-  callback(value.trim().length > 0 ? true : 'You can\'t leave this empty.');
+  const valid = value.trim().length > 0;
+  const message = valid ? null : 'You can\'t leave this empty.' ;
+  callback(message);
 }
 
 function termsOfService(value, callback) {
   required(value, (message) => {
-    if (typeof message === 'string') {
+    if (Boolean(message)) {
       message = 'In order to use our services, you must agree to Google\'s Terms of Service.';
-      callback(message);
     }
+    callback(message);
   });
 }
 
 function username(value, callback) {
   const valid = /^[\w.]+$/.test(value);
-  callback(valid === true ? true : 'Please use only letters (a-z), numbers, and periods.')
+  const message = valid ? null : 'Please use only letters (a-z), numbers, and periods.' ;
+  callback(message);
+}
+
+function createMinLength(length) {
+  return function minLength(value, callback) {
+    const valid = value.length >= length;
+    const message = valid ? null : `Must be at least ${length} characters` ;
+    callback(message);
+  }
 }
 
 class App extends Component {
@@ -120,7 +131,7 @@ class App extends Component {
                   <div className="form-element email-address" id="gmail-address-form-element">
                     <label id="gmail-address-label">
                       <strong>Choose your username</strong>
-                      <InputWrapper manager={this.manager} validators={[required, username]}>
+                      <InputWrapper manager={this.manager} validators={[required, username, createMinLength(3)]}>
                         <input className={errorClass('GmailAddress')} type="text" maxLength="30" autoComplete="off" name="GmailAddress" id="GmailAddress" spellCheck="false" n="3" />
                       </InputWrapper>
                       <span className="atgmail">@gmail.com</span>

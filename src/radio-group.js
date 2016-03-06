@@ -131,7 +131,7 @@ export default class RadioGroup extends Component {
       validators[index](value, (result) => {
         index++;
 
-        if (result !== true) {
+        if (Boolean(result)) {
           isValid = false;
           message = result;
         }
