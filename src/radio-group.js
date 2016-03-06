@@ -16,11 +16,6 @@ export default class RadioGroup extends Component {
     onValidationChange: PropTypes.func
   };
 
-  static defaultProps = {
-    validateOnChange: true,
-    validateOnChangeDelay: 500
-  };
-
   state = {
     valid: null,
     validationMessage: null,
@@ -30,6 +25,8 @@ export default class RadioGroup extends Component {
   radios = new Set([]);
 
   onChangeTimeout = null;
+  validateOnChange = null;
+  validateOnChangeDelay = null;
 
   constructor(...args) {
     super(...args);
@@ -38,56 +35,9 @@ export default class RadioGroup extends Component {
     this.validate = this.validate.bind(this);
   }
 
-  registerValidatedComponent(radio) {
-    radio.addListener('change', this.handleChange);
-    this.radios.add(radio);
-  }
-
-  unregisterValidatedComponent(radio) {
-    if (radio) {
-      radio.removeListener('change', this.handleChange);
-      this.radios.delete(radio);
-    }
-  }
-
-  componentWillMount() {
-    this.props.manager.registerValidatedComponent(this);
-  }
-
-  componentWillUnmount() {
-    this.radios.forEach((radio) => {
-      this.unregisterValidatedComponent(radio);
-    });
-    this.props.manager.unregisterValidatedComponent(this);
-  }
-
-  componentWillUpdate(nextProps, nextState) {
-    if (this.state.valid !== nextState.valid) {
-      if (this.props.onValidationChange) {
-        this.props.onValidationChange(this.state.valid, nextState.valid);
-      }
-
-      if (this.listenerCount('validationChange') > 0) {
-        const name = this.getName();
-        this.emit('validationChange', name, this.state.valid, nextState.valid);
-      }
-    }
-  }
-
-  handleChange(event) {
-    if (this.state.valid !== null) {
-      this.setState({
-        valid: null,
-        validationMessage: null
-      });
-    }
-
-    clearTimeout(this.onChangeTimeout);
-
-    if (this.props.validateOnChange) {
-      this.onChangeTimeout = setTimeout(this.validate, this.props.validateOnChangeDelay);
-    }
-  }
+  //
+  // GETTERS
+  // ---------------------------------------------------------------------------
 
   getName() {
     return this.props.name;
@@ -117,10 +67,41 @@ export default class RadioGroup extends Component {
     return this.state.isValidating;
   }
 
+  //
+  // VALIDATION INTEGRATION
+  // ---------------------------------------------------------------------------
+
+  registerValidatedComponent(radio) {
+    radio.addListener('change', this.handleChange);
+    this.radios.add(radio);
+  }
+
+  unregisterValidatedComponent(radio) {
+    if (radio) {
+      radio.removeListener('change', this.handleChange);
+      this.radios.delete(radio);
+    }
+  }
+
+  handleChange(event) {
+    if (this.state.valid !== null) {
+      this.setState({
+        valid: null,
+        validationMessage: null
+      });
+    }
+
+    clearTimeout(this.onChangeTimeout);
+
+    if (this.validateOnChange) {
+      this.onChangeTimeout = setTimeout(this.validate, this.validateOnChangeDelay);
+    }
+  }
+
   validate(callback = (isValid, message)=>{}) {
     // Clear timeout in case validate() was called while a change was queued.
     // This will prevent a potential double validation.
-    if (this.props.validateOnChange) {
+    if (this.validateOnChange) {
       clearTimeout(this.onChangeTimeout);
     }
 
@@ -160,6 +141,43 @@ export default class RadioGroup extends Component {
     }
 
     next();
+  }
+
+  //
+  // REACT LIFECYCLE
+  // ---------------------------------------------------------------------------
+
+  componentWillMount() {
+    this.props.manager.registerValidatedComponent(this);
+
+    this.validateOnChange = this.props.validateOnChange || this.props.manager.validateOnChange;
+
+    if (this.props.validateOnChangeDelay !== undefined) {
+      this.validateOnChangeDelay = this.props.validateOnChangeDelay;
+
+    } else {
+      this.validateOnChangeDelay = this.props.manager.validateOnChangeDelay;
+    }
+  }
+
+  componentWillUnmount() {
+    this.radios.forEach((radio) => {
+      this.unregisterValidatedComponent(radio);
+    });
+    this.props.manager.unregisterValidatedComponent(this);
+  }
+
+  componentWillUpdate(nextProps, nextState) {
+    if (this.state.valid !== nextState.valid) {
+      if (this.props.onValidationChange) {
+        this.props.onValidationChange(this.state.valid, nextState.valid);
+      }
+
+      if (this.listenerCount('validationChange') > 0) {
+        const name = this.getName();
+        this.emit('validationChange', name, this.state.valid, nextState.valid);
+      }
+    }
   }
 
   render() {

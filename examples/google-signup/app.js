@@ -97,6 +97,7 @@ class App extends Component {
                 <form className="createaccount-form" id="createaccount" name="createaccount" onSubmit={this.handleSubmit.bind(this)}>
                   <div className="form-element multi-field name" id="name-form-element">
                     <fieldset>
+
                       <legend><strong>Name</strong></legend>
                       <label id="firstname-label" className="firstname">
                         <strong>First name</strong>

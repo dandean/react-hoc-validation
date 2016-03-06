@@ -47,6 +47,8 @@ export default class InputWrapper extends Component {
      */
     validateOnChangeDelay: PropTypes.number,
 
+    validateOnBlur: PropTypes.bool,
+
     /**
      * Handler to call when validation state changes.
      *
@@ -56,9 +58,7 @@ export default class InputWrapper extends Component {
   };
 
   static defaultProps = {
-    validators: [],
-    validateOnChange: true,
-    validateOnChangeDelay: 500
+    validators: []
   };
 
   state = {
@@ -68,6 +68,8 @@ export default class InputWrapper extends Component {
   };
 
   onChangeTimeout = null;
+  validateOnChange = null;
+  validateOnChangeDelay = null;
 
   constructor(...args) {
     super(...args);
@@ -77,41 +79,9 @@ export default class InputWrapper extends Component {
     this.validate = this.validate.bind(this);
   }
 
-  componentWillMount() {
-    const { children } = this.props;
-    invariant(
-      children && children.props && children.props.name,
-      'A child component with a "name" property is required'
-    );
-
-    if (children.type === 'input' && children.props.type === 'checkbox') {
-      // Checkbox inputs must have a value attribute set:
-      // https://www.w3.org/TR/html4/interact/forms.html#adef-value-INPUT
-      invariant(
-        children.props && children.props.value,
-        `Inputs of type checkbox must have a value property`
-      );
-    }
-
-    this.props.manager.registerValidatedComponent(this);
-  }
-
-  componentWillUnmount() {
-    this.props.manager.unregisterValidatedComponent(this);
-  }
-
-  componentWillUpdate(nextProps, nextState) {
-    if (this.state.valid !== nextState.valid) {
-      if (this.props.onValidationChange) {
-        this.props.onValidationChange(this.state.valid, nextState.valid);
-      }
-
-      if (this.listenerCount('validationChange') > 0) {
-        const name = this.getName();
-        this.emit('validationChange', name, this.state.valid, nextState.valid);
-      }
-    }
-  }
+  //
+  // GETTERS
+  // ---------------------------------------------------------------------------
 
   getName() {
     return this.props.children.props.name;
@@ -129,6 +99,10 @@ export default class InputWrapper extends Component {
     return this.state.isValidating;
   }
 
+  //
+  // VALIDATION INTEGRATION
+  // ---------------------------------------------------------------------------
+
   handleChange(event) {
     if (this.state.valid !== null) {
       this.setState({
@@ -139,13 +113,13 @@ export default class InputWrapper extends Component {
 
     clearTimeout(this.onChangeTimeout);
 
-    if (this.props.validateOnChange) {
-      this.onChangeTimeout = setTimeout(this.validate, this.props.validateOnChangeDelay);
+    if (this.validateOnChange) {
+      this.onChangeTimeout = setTimeout(this.validate, this.validateOnChangeDelay);
     }
   }
 
   handleBlur(event) {
-    if (this.state.valid === null) {
+    if (this.state.valid === null && this.validateOnBlur) {
       this.validate();
     }
   }
@@ -153,7 +127,7 @@ export default class InputWrapper extends Component {
   validate(callback = (isValid, message)=>{}) {
     // Clear timeout in case validate() was called while a change was queued.
     // This will prevent a potential double validation.
-    if (this.props.validateOnChange) {
+    if (this.validateOnChange || this.validateOnBlur) {
       clearTimeout(this.onChangeTimeout);
     }
 
@@ -202,6 +176,57 @@ export default class InputWrapper extends Component {
     next();
   }
 
+  //
+  // REACT LIFECYCLE
+  // ---------------------------------------------------------------------------
+
+  componentWillMount() {
+    const { children } = this.props;
+    invariant(
+      children && children.props && children.props.name,
+      'A child component with a "name" property is required'
+    );
+
+    if (children.type === 'input' && children.props.type === 'checkbox') {
+      // Checkbox inputs must have a value attribute set:
+      // https://www.w3.org/TR/html4/interact/forms.html#adef-value-INPUT
+      invariant(
+        children.props && children.props.value,
+        `Inputs of type checkbox must have a value property`
+      );
+    }
+
+    this.props.manager.registerValidatedComponent(this);
+
+    this.validateOnChange = this.props.validateOnChange || this.props.manager.validateOnChange;
+
+    if (this.props.validateOnChangeDelay !== undefined) {
+      this.validateOnChangeDelay = this.props.validateOnChangeDelay;
+
+    } else {
+      this.validateOnChangeDelay = this.props.manager.validateOnChangeDelay;
+    }
+
+    this.validateOnBlur = this.props.validateOnBlur || this.props.manager.validateOnBlur;
+  }
+
+  componentWillUnmount() {
+    this.props.manager.unregisterValidatedComponent(this);
+  }
+
+  componentWillUpdate(nextProps, nextState) {
+    if (this.state.valid !== nextState.valid) {
+      if (this.props.onValidationChange) {
+        this.props.onValidationChange(this.state.valid, nextState.valid);
+      }
+
+      if (this.listenerCount('validationChange') > 0) {
+        const name = this.getName();
+        this.emit('validationChange', name, this.state.valid, nextState.valid);
+      }
+    }
+  }
+
   render() {
     let handleChange = this.handleChange;
     const originalOnChange = this.props.children.props.onChange;
@@ -232,5 +257,4 @@ export default class InputWrapper extends Component {
     return element;
   }
 }
-
 Object.assign(InputWrapper.prototype, EventEmitter.prototype);

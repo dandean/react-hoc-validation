@@ -6,7 +6,10 @@ export default class FormWrapper extends Component {
   static propTypes = {
     children: PropTypes.element.isRequired,
     manager: PropTypes.instanceOf(FormValidationManager).isRequired,
-    onValidationChange: PropTypes.func
+    onValidationChange: PropTypes.func,
+    validateOnChange: PropTypes.bool,
+    validateOnChangeDelay: PropTypes.number,
+    validateOnBlur: PropTypes.bool
   };
 
   componentWillMount() {
@@ -17,6 +20,18 @@ export default class FormWrapper extends Component {
 
     this.handleValidationChange = this.handleValidationChange.bind(this);
     this.props.manager.addListener('change', this.handleValidationChange);
+
+    if (this.props.validateOnChange !== undefined) {
+      this.props.manager.validateOnChange = this.props.validateOnChange;
+    }
+
+    if (this.props.validateOnChangeDelay !== undefined) {
+      this.props.manager.validateOnChangeDelay = this.props.validateOnChangeDelay;
+    }
+
+    if (this.props.validateOnBlur !== undefined) {
+      this.props.manager.validateOnBlur = this.props.validateOnBlur;
+    }
   }
 
   componentWillUnmount() {

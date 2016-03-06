@@ -1,7 +1,6 @@
 import { EventEmitter } from 'events';
 import React, { Component, PropTypes } from 'react';
 import ReactDOM from 'react-dom';
-import autobind from 'autobind-decorator';
 import FormValidationManager from './manager';
 import invariant from 'invariant';
 
@@ -16,7 +15,37 @@ export default class RadioWrapper extends Component {
   constructor(...args) {
     super(...args);
     EventEmitter.call(this);
+    this.handleChange = this.handleChange.bind(this);
   }
+
+  //
+  // GETTERS
+  // ---------------------------------------------------------------------------
+
+  getName() {
+    return this.props.children.props.name;
+  }
+
+  getValue() {
+    return this.props.children.props.value;
+  }
+
+  getIsChecked() {
+    const element = ReactDOM.findDOMNode(this);
+    return element.checked;
+  }
+
+  //
+  // VALIDATION INTEGRATION
+  // ---------------------------------------------------------------------------
+
+  handleChange(event) {
+    this.emit('change', event);
+  }
+
+  //
+  // REACT LIFECYCLE
+  // ---------------------------------------------------------------------------
 
   componentWillMount() {
     const { children } = this.props;
@@ -39,24 +68,6 @@ export default class RadioWrapper extends Component {
 
   componentWillUnmount() {
     this.props.manager.unregisterValidatedComponent(this);
-  }
-
-  getName() {
-    return this.props.children.props.name;
-  }
-
-  getValue() {
-    return this.props.children.props.value;
-  }
-
-  getIsChecked() {
-    const element = ReactDOM.findDOMNode(this);
-    return element.checked;
-  }
-
-  @autobind
-  handleChange(event) {
-    this.emit('change', event);
   }
 
   render() {
