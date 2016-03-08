@@ -5,23 +5,12 @@ import classnames from 'classnames';
 import {
   FormValidationManager,
   FormWrapper,
-  InputWrapper
+  InputWrapper,
+  validators
 } from 'react-hoc-validation';
 
-function required(value, callback) {
-  const valid = value.trim().length > 0;
-  const message = valid ? null : 'You can\'t leave this empty.' ;
-  callback(message);
-}
-
-function termsOfService(value, callback) {
-  required(value, (message) => {
-    if (Boolean(message)) {
-      message = 'In order to use our services, you must agree to Google\'s Terms of Service.';
-    }
-    callback(message);
-  });
-}
+const required = validators.createRequired('You can\'t leave this empty.');
+const termsOfService = validators.createRequired('In order to use our services, you must agree to Google\'s Terms of Service.');
 
 function username(value, callback) {
   const valid = /^[\w.]+$/.test(value);
@@ -29,13 +18,7 @@ function username(value, callback) {
   callback(message);
 }
 
-function createMinLength(length) {
-  return function minLength(value, callback) {
-    const valid = value.length >= length;
-    const message = valid ? null : `Must be at least ${length} characters` ;
-    callback(message);
-  }
-}
+const userNameMinLength = validators.createMinLength(3, `Must be at least 3 characters`);
 
 class App extends Component {
   state = {
@@ -131,7 +114,7 @@ class App extends Component {
                   <div className="form-element email-address" id="gmail-address-form-element">
                     <label id="gmail-address-label">
                       <strong>Choose your username</strong>
-                      <InputWrapper manager={this.manager} validators={[required, username, createMinLength(3)]}>
+                      <InputWrapper manager={this.manager} validators={[required, username, userNameMinLength]}>
                         <input className={errorClass('GmailAddress')} type="text" maxLength="30" autoComplete="off" name="GmailAddress" id="GmailAddress" spellCheck="false" n="3" />
                       </InputWrapper>
                       <span className="atgmail">@gmail.com</span>

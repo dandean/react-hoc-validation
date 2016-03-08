@@ -5,12 +5,11 @@ import classnames from 'classnames';
 import {
   FormValidationManager,
   FormWrapper,
-  InputWrapper
+  InputWrapper,
+  validators
 } from 'react-hoc-validation';
 
-function required(value, callback) {
-  callback(value.trim().length > 0 ? true : 'Username is required');
-}
+const required = validators.createRequired('Username is required');
 
 class App extends Component {
   state = {
