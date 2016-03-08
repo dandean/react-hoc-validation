@@ -5,9 +5,12 @@ import FormValidationManager from './manager';
 import invariant from 'invariant';
 
 export default class RadioGroup extends Component {
+  static contextTypes = {
+    formValidationManager: PropTypes.instanceOf(FormValidationManager).isRequired
+  };
+
   static propTypes = {
     name: PropTypes.string.isRequired,
-    manager: PropTypes.instanceOf(FormValidationManager).isRequired,
     validators: PropTypes.arrayOf(PropTypes.func),
 
     validateOnChange: PropTypes.bool,
@@ -148,15 +151,16 @@ export default class RadioGroup extends Component {
   // ---------------------------------------------------------------------------
 
   componentWillMount() {
-    this.props.manager.registerValidatedComponent(this);
+    const manager = this.context.formValidationManager;
+    manager.registerValidatedComponent(this);
 
-    this.validateOnChange = this.props.validateOnChange || this.props.manager.validateOnChange;
+    this.validateOnChange = this.props.validateOnChange || manager.validateOnChange;
 
     if (this.props.validateOnChangeDelay !== undefined) {
       this.validateOnChangeDelay = this.props.validateOnChangeDelay;
 
     } else {
-      this.validateOnChangeDelay = this.props.manager.validateOnChangeDelay;
+      this.validateOnChangeDelay = manager.validateOnChangeDelay;
     }
   }
 
@@ -164,7 +168,7 @@ export default class RadioGroup extends Component {
     this.radios.forEach((radio) => {
       this.unregisterValidatedComponent(radio);
     });
-    this.props.manager.unregisterValidatedComponent(this);
+    this.context.formValidationManager.unregisterValidatedComponent(this);
   }
 
   componentWillUpdate(nextProps, nextState) {

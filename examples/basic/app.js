@@ -46,7 +46,7 @@ class App extends Component {
         <FormWrapper manager={this.manager} onValidationChange={this.handleValidationChange.bind(this)}>
           <form>
             <label htmlFor="username">Username</label>
-            <InputWrapper manager={this.manager} validators={[required]}>
+            <InputWrapper validators={[required]}>
               <input type="text" name="username" id="username" />
             </InputWrapper>
             <span className={usernameMessageClassName}>

@@ -5,9 +5,12 @@ import FormValidationManager from './manager';
 import invariant from 'invariant';
 
 export default class RadioWrapper extends Component {
+  static contextTypes = {
+    formValidationManager: PropTypes.instanceOf(FormValidationManager).isRequired
+  };
+
   static propTypes = {
-    children: PropTypes.element.isRequired,
-    manager: PropTypes.instanceOf(FormValidationManager).isRequired
+    children: PropTypes.element.isRequired
   };
 
   type = 'RadioWrapper';
@@ -63,11 +66,11 @@ export default class RadioWrapper extends Component {
       );
     }
 
-    this.props.manager.registerValidatedComponent(this);
+    this.context.formValidationManager.registerValidatedComponent(this);
   }
 
   componentWillUnmount() {
-    this.props.manager.unregisterValidatedComponent(this);
+    this.context.formValidationManager.unregisterValidatedComponent(this);
   }
 
   render() {

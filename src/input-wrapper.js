@@ -5,6 +5,15 @@ import FormValidationManager from './manager';
 import invariant from 'invariant';
 
 export default class InputWrapper extends Component {
+  static contextTypes = {
+    /**
+     * The FormManager instance, which is required in order to enable validation.
+     *
+     * @type {FormManager}
+     */
+    formValidationManager: PropTypes.instanceOf(FormValidationManager).isRequired
+  };
+
   static propTypes = {
     /**
      * Because this is a higher order component, only a single child component
@@ -13,13 +22,6 @@ export default class InputWrapper extends Component {
      * @type {Component}
      */
     children: PropTypes.element.isRequired,
-
-    /**
-     * The FormManager instance, which is required in order to enable validation.
-     *
-     * @type {FormManager}
-     */
-    manager: PropTypes.instanceOf(FormValidationManager).isRequired,
 
     /**
      * An array of validation functions. All functions:
@@ -196,22 +198,23 @@ export default class InputWrapper extends Component {
       );
     }
 
-    this.props.manager.registerValidatedComponent(this);
+    const manager = this.context.formValidationManager;
+    manager.registerValidatedComponent(this);
 
-    this.validateOnChange = this.props.validateOnChange || this.props.manager.validateOnChange;
+    this.validateOnChange = this.props.validateOnChange || manager.validateOnChange;
 
     if (this.props.validateOnChangeDelay !== undefined) {
       this.validateOnChangeDelay = this.props.validateOnChangeDelay;
 
     } else {
-      this.validateOnChangeDelay = this.props.manager.validateOnChangeDelay;
+      this.validateOnChangeDelay = manager.validateOnChangeDelay;
     }
 
-    this.validateOnBlur = this.props.validateOnBlur || this.props.manager.validateOnBlur;
+    this.validateOnBlur = this.props.validateOnBlur || manager.validateOnBlur;
   }
 
   componentWillUnmount() {
-    this.props.manager.unregisterValidatedComponent(this);
+    this.context.formValidationManager.unregisterValidatedComponent(this);
   }
 
   componentWillUpdate(nextProps, nextState) {

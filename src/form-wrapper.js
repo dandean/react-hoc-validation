@@ -12,6 +12,16 @@ export default class FormWrapper extends Component {
     validateOnBlur: PropTypes.bool
   };
 
+  static childContextTypes = {
+    formValidationManager: PropTypes.instanceOf(FormValidationManager)
+  };
+
+  getChildContext() {
+    return {
+      formValidationManager: this.props.manager
+    }
+  };
+
   componentWillMount() {
     invariant(
       this.props.children && this.props.children.type === 'form',
