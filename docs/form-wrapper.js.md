@@ -7,7 +7,7 @@ component, its rendered DOM element *is* the child `<form>` element.
 The `<FormWrapper>` component’s props are the place to configure default
 behavior for all child validation components.
 
-```js
+```html
 <FormWrapper>
   <form>
     Your form controls in here
@@ -15,7 +15,9 @@ behavior for all child validation components.
 </FormWrapper>
 ```
 
+
 ### FormWrapper Props
+
 
 #### `<FormWrapper manager={FormValidationManager}>`
 
@@ -23,10 +25,25 @@ The manager prop must be an instance of `FormValidationManager`. You must
 create this instance yourself, probably in `componentWillMount`, and it
 may not be used by more than one `<FormWrapper>`.
 
+
 #### `<FormWrapper validateOnChange={Boolean:true}>`
 
-All form validators are executed by default when the form input’s value
-changes. To prevent this, set `validateOnChange={false}`.
+Each input's validators are executed (after a delay) when the input’s
+value changes. To prevent this, set `validateOnChange={false}`.
+
+
+#### `<FormWrapper validateOnChangeDelay={Number:500}>`
+
+The number of milliseconds after an input's value changes to wait until
+executing validators.
+
+
+#### `<FormWrapper validateOnBlur={Boolean:true}>`
+
+Each input's validators are executed when the input's "blur" event fires.
+To prevent this, set `validateOnBlur={false}`. This does not apply
+to radio inputs.
+
 
 #### `<FormWrapper onValidationChange={Function}>`
 
