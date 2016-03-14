@@ -2,14 +2,43 @@ import React, { Component, PropTypes } from 'react';
 import invariant from 'invariant';
 import FormValidationManager from './manager';
 
+/**
+ * # FormWrapper
+ *
+ * The `<FormWrapper>` component decorates a `<form>` element with default
+ * validation properties and configuration.
+ *
+ * ```html
+ * <FormWrapper manager={formValidationManager} onValidationChange={handleValidationChange}>
+ *   <form>
+ *     Your form controls in here
+ *   </form>
+ * </FormWrapper>
+ * ```
+ */
 export default class FormWrapper extends Component {
+  /**
+   * ## Properties
+   *
+   * The `manager` prop is required. Every other prop in documented in
+   * [standard component props](./README.md#standard-component-props).
+   */
   static propTypes = {
     children: PropTypes.element.isRequired,
+
+    /**
+     * ### `manager={FormValidationManager}`
+     *
+     * The manager prop must be an instance of `FormValidationManager`. You must
+     * create this instance yourself, probably in `componentWillMount`, and it
+     * may not be used by more than one `<FormWrapper>`.
+     */
     manager: PropTypes.instanceOf(FormValidationManager).isRequired,
-    onValidationChange: PropTypes.func,
+
     validateOnChange: PropTypes.bool,
     validateOnChangeDelay: PropTypes.number,
-    validateOnBlur: PropTypes.bool
+    validateOnBlur: PropTypes.bool,
+    onValidationChange: PropTypes.func
   };
 
   static childContextTypes = {

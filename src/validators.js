@@ -18,6 +18,8 @@ export function createRequired(message='Required') {
 /**
  * Create a min-length value validator
  *
+ * @throws {Invariant} If length is not a number
+ * @throws {Invariant} If length less than 0
  * @param {Number} length The minimum length
  * @param {String} [message] The validation message
  * @return {Function} The validator function

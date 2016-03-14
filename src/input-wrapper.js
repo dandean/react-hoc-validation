@@ -4,57 +4,97 @@ import ReactDOM from 'react-dom';
 import FormValidationManager from './manager';
 import invariant from 'invariant';
 
+/**
+ * # InputWrapper
+ *
+ * The `<InputWrapper>` component decorates `<input>`, `<textareaa>`, and
+ * `<select>` elements with validation properties and configuration.
+ *
+ * ```html
+ * <InputWrapper validators={[fn]}>
+ *   <input type="text" name="foo" />
+ * </InputWrapper>
+ * ```
+ */
 export default class InputWrapper extends Component {
   static contextTypes = {
-    /**
-     * The FormManager instance, which is required in order to enable validation.
-     *
-     * @type {FormManager}
-     */
     formValidationManager: PropTypes.instanceOf(FormValidationManager).isRequired
   };
 
+  /**
+   * ## Properties
+   *
+   * All props are documented in [standard component props](./README.md#standard-component-props).
+   */
   static propTypes = {
-    /**
-     * Because this is a higher order component, only a single child component
-     * is allowed, and it is required.
-     *
-     * @type {Component}
-     */
     children: PropTypes.element.isRequired,
 
     /**
-     * An array of validation functions. All functions:
+     * ### `<InputWrapper validators={[Function...]}>`
      *
-     * * take `value` as the first argument
-     * * take `callback` as the second argument
-     * * pass true if valid or a string if invalid to the callback
+     * An array of validation functions. Validators are simple functions which
+     * take a string value as input and return a string **only if the value is
+     * invalid**.
      *
-     * @type {Array}
+     * This would be a simple required field validator:
+     *
+     * ```js
+     * function required(value) {
+     *   if (value.trim().length === 0) {
+     *     // Return the validation message...
+     *     return 'This field is required';
+     *   }
+     *   // ...or nothing is value is not empty.
+     * }
+     * ```
+     *
+     * ```html
+     * <InputWrapper validator={[required]}>
+     *   <input type="text" name="foo" />
+     * </InputWrapper>
+     * ```
      */
     validators: PropTypes.arrayOf(PropTypes.func),
 
     /**
-     * If the component's validators should run when the input's value changes.
+     * ### `<InputWrapper validateOnChange={Boolean:true}>`
      *
-     * @type {Boolean}
+     * Validator functions are executed (after a delay) when the field’s
+     * value changes. To prevent this, set `validateOnChange={false}`.
+     *
+     * Default value is inherited from `<FromWrapper>`.
      */
     validateOnChange: PropTypes.bool,
 
     /**
-     * How long (in milliseconds) to wait after the value has changed before
-     * running validators.
+     * ### `<InputWrapper validateOnChangeDelay={Number:500}>`
      *
-     * @type {Number}
+     * The number of milliseconds after the field's value changes to wait until
+     * executing validator functions.
+     *
+     * Default value is inherited from `<FromWrapper>`.
      */
     validateOnChangeDelay: PropTypes.number,
 
+    /**
+     * ### `<InputWrapper validateOnBlur={Boolean:true}>`
+     *
+     * Each field’s validator functions are executed when the field’s "blur"
+     * event fires. To prevent this, set `validateOnBlur={false}`. This does not
+     * apply to radio inputs.
+     *
+     * Default value is inherited from `<FromWrapper>`.
+     */
     validateOnBlur: PropTypes.bool,
 
     /**
-     * Handler to call when validation state changes.
+     * ### `<InputWrapper onValidationChange={Function}>`
      *
-     * @type {Function}
+     * The function to call when the validation state changes on the wrapped
+     * field. This is useful to trigger component state changes and thus display
+     * validation messages to the user.
+     *
+     * Default value is inherited from `<FromWrapper>`.
      */
     onValidationChange: PropTypes.func
   };
