@@ -78,29 +78,29 @@ should create your own, I suggest using [validator.js](https://www.npmjs.com/pac
 as the foundation for your own validator creators.
 
 
-### `createRequired(message='Required')`
+#### `createRequired(message='Required')`
 
 Creates a required value validator
 
 
-### `createMinLength(length: Number, message='Too short')`
+#### `createMinLength(length: Number, message='Too short')`
 
 Creates a min-length value validator. Throws `invariant` if `length` is not a
 Number or is less than zero.
 
 
-### `createMaxLength(length: Number, message='Too long')`
+#### `createMaxLength(length: Number, message='Too long')`
 
 Creates a max-length value validator. Throws `invariant` if `length` is not a
 Number or is less than one.
 
 
-### `createIsInt(message='Not an integer')`
+#### `createIsInt(message='Not an integer')`
 
 Creates an integer string validator
 
 
-### `createIsPhone(locale='en-US', message='Not a phone number')`
+#### `createIsPhone(locale='en-US', message='Not a phone number')`
 
 Create a phone number validator
 
@@ -108,7 +108,7 @@ See validator.js for locale options:
 https://github.com/chriso/validator.js
 
 
-### `createIsEmail(options, message='Invalid email address')`
+#### `createIsEmail(options, message='Invalid email address')`
 
 Create an email validator
 
@@ -116,6 +116,6 @@ See validator.js for email validation options:
 https://github.com/chriso/validator.js
 
 
-### `createMatches(pattern: RegExp, message='Does not match pattern `pattern`')`
+#### `createMatches(pattern: RegExp, message='Does not match pattern `pattern`')`
 
 Create a regular expression validator

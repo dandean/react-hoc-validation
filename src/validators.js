@@ -83,7 +83,7 @@ import invariant from 'invariant';
  */
 
 /**
- * ### `createRequired(message='Required')`
+ * #### `createRequired(message='Required')`
  *
  * Creates a required value validator
  */
@@ -96,7 +96,7 @@ export function createRequired(message='Required') {
 }
 
 /**
- * ### `createMinLength(length: Number, message='Too short')`
+ * #### `createMinLength(length: Number, message='Too short')`
  *
  * Creates a min-length value validator. Throws `invariant` if `length` is not a
  * Number or is less than zero.
@@ -113,7 +113,7 @@ export function createMinLength(length, message='Too short') {
 }
 
 /**
- * ### `createMaxLength(length: Number, message='Too long')`
+ * #### `createMaxLength(length: Number, message='Too long')`
  *
  * Creates a max-length value validator. Throws `invariant` if `length` is not a
  * Number or is less than one.
@@ -130,7 +130,7 @@ export function createMaxLength(length, message='Too long') {
 }
 
 /**
- * ### `createIsInt(message='Not an integer')`
+ * #### `createIsInt(message='Not an integer')`
  *
  * Creates an integer string validator
  */
@@ -143,7 +143,7 @@ export function createIsInt(message='Not an integer') {
 }
 
 /**
- * ### `createIsPhone(locale='en-US', message='Not a phone number')`
+ * #### `createIsPhone(locale='en-US', message='Not a phone number')`
  *
  * Create a phone number validator
  *
@@ -159,7 +159,7 @@ export function createIsPhone(locale='en-US', message='Not a phone number') {
 }
 
 /**
- * ### `createIsEmail(options, message='Invalid email address')`
+ * #### `createIsEmail(options, message='Invalid email address')`
  *
  * Create an email validator
  *
@@ -175,7 +175,7 @@ export function createIsEmail(options, message='Invalid email address') {
 }
 
 /**
- * ### `createMatches(pattern: RegExp, message='Does not match pattern `pattern`')`
+ * #### `createMatches(pattern: RegExp, message='Does not match pattern `pattern`')`
  *
  * Create a regular expression validator
  */
