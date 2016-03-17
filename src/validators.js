@@ -69,17 +69,17 @@ import invariant from 'invariant';
  * ```
  *
  *
+ * ## Learn More
+ *
+ * Read the source for good examples of how to create your own validators and
+ * validator creators: [src/validators.js](../src/validators.js).
+ *
+ *
  * ## Provided Validator Creators
  *
  * A few validator creators are provided by this module. For the most part you
  * should create your own, I suggest using [validator.js](https://www.npmjs.com/package/validator)
  * as the foundation for your own validator creators.
- *
- *
- * ## Learn More
- *
- * Read the source for good examples of how to create your own validators and
- * validator creators: [src/validators.js](../src/validators.js).
  */
 
 /**
