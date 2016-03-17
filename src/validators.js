@@ -175,7 +175,7 @@ export function createIsEmail(options, message='Invalid email address') {
 }
 
 /**
- * #### `createMatches(pattern: RegExp, message='Does not match pattern `pattern`')`
+ * #### `createMatches(pattern: RegExp, message='Does not match pattern /pattern/)`
  *
  * Create a regular expression validator
  */

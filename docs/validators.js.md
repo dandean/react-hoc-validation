@@ -116,6 +116,6 @@ See validator.js for email validation options:
 https://github.com/chriso/validator.js
 
 
-#### `createMatches(pattern: RegExp, message='Does not match pattern `pattern`')`
+#### `createMatches(pattern: RegExp, message='Does not match pattern /pattern/)`
 
 Create a regular expression validator
