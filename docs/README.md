@@ -1,5 +1,22 @@
 # Documentation
 
+Basic markup taken from one of the examples:
+
+```html
+<FormWrapper manager={this.manager} onValidationChange={this.handleValidationChange.bind(this)}>
+  <form>
+    <label htmlFor="username">Username</label>
+    <InputWrapper validators={[required]}>
+      <input type="text" name="username" id="username" />
+    </InputWrapper>
+    <span className={usernameMessageClassName}>
+      {this.manager.getFieldValidationMessage('username')}
+    </span>
+    <input type="submit" value="submit" />
+  </form>
+</FormWrapper>
+```
+
 ## Standard Component Props
 
 These components decorate standard HTML elements with validation properties and
