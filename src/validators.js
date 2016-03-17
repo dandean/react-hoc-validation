@@ -2,6 +2,16 @@ import validator from 'validator';
 import invariant from 'invariant';
 
 /**
+ * # Validators
+ *
+ * Validators are simple functions which take value input and return a string:
+ *
+ * ```
+ * validator(value: String) -> String
+ * ```
+ */
+
+/**
  * Create a required value validator
  *
  * @param {String} [message] The validation message

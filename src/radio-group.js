@@ -10,10 +10,6 @@ import invariant from 'invariant';
  * The `<RadioGroup>` component decorates a group of `<input type="radio">`,
  * elements with validation properties and configuration.
  *
- * The `<RadioGroup>` component’s props are the place to configure the validator
- * functions **and** to override the default configuration settings associated
- * with a group of radio inputs from `<FormWrapper>`.
- *
  * ```html
  * <RadioGroup name="foo" validators={[fn]}>
  *   <div>

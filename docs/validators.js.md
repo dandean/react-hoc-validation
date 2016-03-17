@@ -1,5 +1,10 @@
-Prebuilt validator creation functions
-@module validators
+# Validators
+
+Validators are simple functions which take value input and return a string:
+
+```
+validator(value: String) -> String
+```
 
 
 Create a required value validator
