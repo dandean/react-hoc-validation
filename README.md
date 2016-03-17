@@ -3,6 +3,9 @@
 This modules makes use of higher order components to decorate straight forward
 form markup with validation rules.
 
+## Documentation
+
+[Read up!](./docs)
 
 ## Goals
 
