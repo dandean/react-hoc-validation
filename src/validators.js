@@ -25,8 +25,8 @@ import invariant from 'invariant';
  * ## Validator configuration: creators
  *
  * Because validators are simple functions which take only a field’s value as
- * input there is no way to pass things custom validation messages or other
- * configuratio options into a validator as arguments.
+ * input there is no way to pass custom validation messages or other
+ * configuration options into a validator as arguments.
  *
  * JavaScript has a solution built in to support this in a different way:
  * **closures**.
@@ -34,7 +34,7 @@ import invariant from 'invariant';
  *
  * ### Custom validation messages
  *
- * Here's an example of a required-field validator *creator*, which allows for
+ * Here's an example of a required-field validator **creator** which enables a
  * a custom validation message:
  *
  * ```js
@@ -78,8 +78,9 @@ import invariant from 'invariant';
  * ## Provided Validator Creators
  *
  * A few validator creators are provided by this module. For the most part you
- * should create your own, I suggest using [validator.js](https://www.npmjs.com/package/validator)
- * as the foundation for your own validator creators.
+ * should create your own, I suggest using
+ * [Chris O’Hara’s validator.js](https://www.npmjs.com/package/validator) as the
+ * foundation for your own validators.
  */
 
 /**
