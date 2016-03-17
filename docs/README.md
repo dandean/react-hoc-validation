@@ -40,20 +40,21 @@ trigger component state changes and thus display validation messages to the user
 
 Applies only to `<InputWrapper>` and `<RadioGroup>`.
 
-Validator functions are just basic functions which receive the the field’s input
-and return a message string if the input is invalid.
+Validators are simple functions which take value input and a callback. The
+callback is given a string when input is invalid.
 
-Here's an example required value validator:
+```
+validator(value: String, callback: Function)
+```
+
+Here's an example of a simple required-field validator:
 
 ```js
-function required(value) {
-  if (value.trim().length === 0) {
-    // Return the validation message...
-    return 'This field is required';
-  }
-  // ...or nothing is value is not empty.
+function required(value, callback) {
+  const valid = value.trim().length > 0;
+  const message = valid ? null : 'This is a required field' ;
+  callback(message);
 }
-
 ```
 
 And a component which uses it:
@@ -64,7 +65,8 @@ And a component which uses it:
 </InputWrapper>
 ```
 
-## Component and Classes
+## Component, Classes, and Validators
 
 * [`<FormWrapper>`](./form-wrapper.js.md)
 * [`<InputWrapper>`](./input-wrapper.js.md)
+* [`validators`](./validators.js.md)
