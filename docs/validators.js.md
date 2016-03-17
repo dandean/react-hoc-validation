@@ -17,6 +17,7 @@ function required(value, callback) {
 }
 ```
 
+
 ## Validator configuration: creators
 
 Because validators are simple functions which take only a field’s value as
@@ -25,6 +26,7 @@ configuratio options into a validator as arguments.
 
 JavaScript has a solution built in to support this in a different way:
 **closures**.
+
 
 ### Custom validation messages
 
@@ -44,14 +46,15 @@ const requiredEmail = createRequired('Please enter an email address');
 const requiredPassphrase = createRequired('Please enter an passphrase');
 ```
 
+
 ### Validator options
 
-The same approach allows for creating validators with parameters:
+Closures also allow for creating validators with parameters:
 
 ```js
 export function createMinLength(length, message='Too short') {
   return function minLength(value, callback) {
-    const valid = validator.isLength(value, { min: length });
+    const valid = value.length >= length;
     const response = valid ? null : message ;
     callback(response);
   }
@@ -61,11 +64,18 @@ const minLengthFive = createMinLength(5);
 const minLengthTen = createMinLength(10, 'Usernames must be at least 10 characters long');
 ```
 
+
 ## Provided Validator Creators
 
 A few validator creators are provided by this module. For the most part you
 should create your own, I suggest using [validator.js](https://www.npmjs.com/package/validator)
 as the foundation for your own validator creators.
+
+
+## Learn More
+
+Read the source for good examples of how to create your own validators and
+validator creators: [src/validators.js](../src/validators.js).
 
 
 ### `createRequired(message='Required')`
