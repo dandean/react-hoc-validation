@@ -86,4 +86,5 @@ And a component which uses it:
 
 * [`<FormWrapper>`](./form-wrapper.js.md)
 * [`<InputWrapper>`](./input-wrapper.js.md)
+* [`<RadioWrapper>`](./radio-wrapper.js.md)
 * [`validators`](./validators.js.md)
