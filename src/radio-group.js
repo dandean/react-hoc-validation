@@ -8,7 +8,9 @@ import invariant from 'invariant';
  * # RadioGroup
  *
  * The `<RadioGroup>` component decorates a group of `<input type="radio">`,
- * elements with validation properties and configuration.
+ * elements with validation properties and configuration. Each radio input
+ * must be wrapped in a `<RadioWrapper>` in order for the `<RadioGroup>` to know
+ * about them.
  *
  * ```html
  * <RadioGroup name="foo" validators={[fn]}>
@@ -28,6 +30,13 @@ export default class RadioGroup extends Component {
     formValidationManager: PropTypes.instanceOf(FormValidationManager).isRequired
   };
 
+  /**
+   * ## Props
+   *
+   * All props are documented in [standard component props](./README.md#standard-component-props),
+   * with the exception of `validateOnBlur`, which does not apply to
+   * `<RadioGroup>`.
+   */
   static propTypes = {
     name: PropTypes.string.isRequired,
     validators: PropTypes.arrayOf(PropTypes.func),
