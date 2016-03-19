@@ -1,21 +1,15 @@
 import { EventEmitter } from 'events';
 
-const isValidatingKey = Symbol();
+const _isValidating_ = Symbol();
+const _components_ = Symbol();
 
 /**
- * @class FormManager
+ * # FormManager
  *
- * The FormManager is the central point of coordination between the various
+ * `FormManager` is the central point of coordination between the various
  * components in this tool.
  */
 export default class FormManager extends EventEmitter {
-  /**
-   * Map of React HOC components by name attribute.
-   *
-   * @type {Map}
-   */
-  components = new Map([]);
-
   /**
    * Stores the *validation state* for all registered components. It's important
    * to note that this is not the form values, just whether the current values
@@ -39,7 +33,10 @@ export default class FormManager extends EventEmitter {
 
   constructor() {
     super();
-    this[isValidatingKey] = false;
+
+    this[_components_] = new Map([]);
+    this[_isValidating_] = false;
+
     this.handleValidationChange = this.handleValidationChange.bind(this);
   }
 
@@ -65,7 +62,7 @@ export default class FormManager extends EventEmitter {
    * @return {String} The validation message
    */
   getFieldValidationMessage(name) {
-    const component = this.components.get(name);
+    const component = this[_components_].get(name);
     if (component) {
       return component.getValidationStateMessage();
     }
@@ -78,7 +75,7 @@ export default class FormManager extends EventEmitter {
    */
   getIsAnyFieldInvalid() {
     let isValid = true;
-    this.components.forEach((component, name) => {
+    this[_components_].forEach((component, name) => {
       if (isValid === true && component.getValidationState() === false) {
         isValid = false;
       }
@@ -89,7 +86,7 @@ export default class FormManager extends EventEmitter {
 
   getIsValidating() {
     // If form is validating, return `true` early:
-    if (this[isValidatingKey] === true){
+    if (this[_isValidating_] === true){
       return true;
     }
 
@@ -98,7 +95,7 @@ export default class FormManager extends EventEmitter {
 
     let isValidating = false;
 
-    for (let [name, component] of this.components.entries()) {
+    for (let [name, component] of this[_components_].entries()) {
       if (component.getIsValidating() === true) {
         isValidating = true;
         break;
@@ -124,7 +121,7 @@ export default class FormManager extends EventEmitter {
     if (component.type === 'RadioWrapper') {
       // If component is a RadioWrapper, register it with the group with the
       // corresponding name:
-      const group = this.components.get(name);
+      const group = this[_components_].get(name);
       if (group === undefined) {
         throw new Error('RadioWrapper requires a RadioGroup with the same name')
       }
@@ -133,7 +130,7 @@ export default class FormManager extends EventEmitter {
     } else {
       // Listen for when the validation state changes and store a component ref:
       component.addListener('validationChange', this.handleValidationChange);
-      this.components.set(component.getName(), component);
+      this[_components_].set(component.getName(), component);
     }
   }
 
@@ -145,7 +142,7 @@ export default class FormManager extends EventEmitter {
    */
   unregisterValidatedComponent(component) {
     if (component.type === 'RadioWrapper') {
-      const group = this.components.get(name);
+      const group = this[_components_].get(name);
 
       // RadioGroup will unmount before RadioWrapper if nested, so no need to
       // unregister if it's already gone:
@@ -155,7 +152,7 @@ export default class FormManager extends EventEmitter {
 
     } else {
       component.removeListener('validationChange', this.handleValidationChange);
-      this.components.delete(component.getName());
+      this[_components_].delete(component.getName());
     }
   }
 
@@ -179,22 +176,22 @@ export default class FormManager extends EventEmitter {
    * @param {Function} [callback] Called when all fields have been validated
    */
   validate(callback = ()=>{}) {
-    this[isValidatingKey] = true;
+    this[_isValidating_] = true;
 
-    const count = this.components.size;
+    const count = this[_components_].size;
     let completed = 0;
 
     const done = (result) => {
       completed++;
       if (count === completed) {
-        this[isValidatingKey] = false;
+        this[_isValidating_] = false;
 
         // Wait a tick to allow event emitter handlers to complete
         process.nextTick(callback);
       }
     }
 
-    this.components.forEach((component, name) => {
+    this[_components_].forEach((component, name) => {
       component.validate(done);
     });
   }
