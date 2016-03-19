@@ -84,6 +84,7 @@ And a component which uses it:
 
 ## Component, Classes, and Validators
 
+* [`FormValidationManager`](./manager.js.md)
 * [`<FormWrapper>`](./form-wrapper.js.md)
 * [`<InputWrapper>`](./input-wrapper.js.md)
 * [`<RadioGroup>`](./radio-group.js.md)

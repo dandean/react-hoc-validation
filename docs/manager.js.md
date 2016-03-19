@@ -1,12 +1,7 @@
-@class FormManager
+# FormManager
 
-The FormManager is the central point of coordination between the various
+`FormManager` is the central point of coordination between the various
 components in this tool.
-
-
-Map of React HOC components by name attribute.
-
-@type {Map}
 
 
 Stores the *validation state* for all registered components. It's important
@@ -22,16 +17,20 @@ The value for each key will be:
 @type {Object}
 
 
-Get the current validation state for field `name`.
+### `getState(fieldName) -> Boolean | null`
 
-@param {String} name The name of the field by name attribute
-@return {Boolean|null} The current validation state
+Get the current validation state for the field `name="fieldName"`. Returns
+`true`, `false`, or `null`.
+
+* `true`: valid
+* `false`: invalid
+* `null`: not yet validated
 
 
-Get the current validation message associated with field `name`.
+### `getMessage(fieldName) -> String | undefined`
 
-@param {String} name The name of the field by "name" attribute
-@return {String} The validation message
+Get the current validation message for the field `name="fieldName"`.
+Returns `undefined` when the field is
 
 
 If any field is currently "valid" (not false, not null).

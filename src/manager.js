@@ -1,4 +1,5 @@
 import { EventEmitter } from 'events';
+import invariant from 'invariant';
 
 const _isValidating_ = Symbol();
 const _components_ = Symbol();
@@ -45,10 +46,14 @@ export default class FormManager extends EventEmitter {
   // ---------------------------------------------------------------------------
 
   /**
-   * Get the current validation state for field `name`.
+   * ### `getState(fieldName) -> Boolean | null`
    *
-   * @param {String} name The name of the field by name attribute
-   * @return {Boolean|null} The current validation state
+   * Get the current validation state for the field `name="fieldName"`. Returns
+   * `true`, `false`, or `null`.
+   *
+   * * `true`: valid
+   * * `false`: invalid
+   * * `null`: not yet validated
    */
   getState(name) {
     const state = this.state[name];
@@ -56,16 +61,17 @@ export default class FormManager extends EventEmitter {
   }
 
   /**
-   * Get the current validation message associated with field `name`.
+   * ### `getMessage(fieldName) -> String | undefined`
    *
-   * @param {String} name The name of the field by "name" attribute
-   * @return {String} The validation message
+   * Get the current validation message for the field `name="fieldName"`.
+   * Returns `undefined` when the field is
    */
   getMessage(name) {
     const component = this[_components_].get(name);
-    if (component) {
-      return component.getValidationStateMessage();
-    }
+    invariant(Boolean(component), `Field ${name} does not exist`);
+
+    const message = component.getValidationStateMessage();
+    return message;
   }
 
   /**
