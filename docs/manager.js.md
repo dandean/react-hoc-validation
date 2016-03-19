@@ -1,7 +1,23 @@
 # FormManager
 
 `FormManager` is the central point of coordination between the various
-components in this tool.
+components in this tool. You provide an instance to your form.
+
+```js
+class Foo extends Component {
+  componentWillMount() {
+    this.manager = new FormValidationManager();
+  }
+
+  render() {
+    return (
+      <FormWrapper manager={this.manager}>
+        ...
+      </FormWrapper>
+    );
+  }
+}
+```
 
 
 ## Methods
