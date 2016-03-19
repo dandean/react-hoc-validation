@@ -64,7 +64,6 @@ export default class FormManager extends EventEmitter {
    * ### `getMessage(fieldName) -> String | undefined`
    *
    * Get the current validation message for the field `name="fieldName"`.
-   * Returns `undefined` when the field is
    */
   getMessage(name) {
     const component = this[_components_].get(name);
@@ -75,9 +74,9 @@ export default class FormManager extends EventEmitter {
   }
 
   /**
-   * If any field is currently "valid" (not false, not null).
+   * ### `getIsAnyFieldInvalid() -> Boolean`
    *
-   * @return {Boolean}
+   * If any field is currently invalid.
    */
   getIsAnyFieldInvalid() {
     let isValid = true;
@@ -90,6 +89,11 @@ export default class FormManager extends EventEmitter {
     return isValid === false;
   }
 
+  /**
+   * ### `getIsValidating() -> Boolean`
+   *
+   * If validation functions are currently executing.
+   */
   getIsValidating() {
     // If form is validating, return `true` early:
     if (this[_isValidating_] === true){
@@ -115,12 +119,10 @@ export default class FormManager extends EventEmitter {
   // VALIDATION INTEGRATION
   // ---------------------------------------------------------------------------
 
-  /**
-   * Register a component for validation. Components call this method within
-   * their own `componentWillMount` method.
-   *
-   * @param {Component} component A higher order validation component
-   */
+  // Register a component for validation. Components call this method within
+  // their own `componentWillMount` method.
+  //
+  // @param {Component} component A higher order validation component
   registerValidatedComponent(component) {
     const name = component.getName();
 
@@ -140,12 +142,10 @@ export default class FormManager extends EventEmitter {
     }
   }
 
-  /**
-   * Unregister a component for validation. Components call this method within
-   * their own `componentWillUnmount` method:
-   *
-   * @param {Component} component A higher order validation component
-   */
+  // Unregister a component for validation. Components call this method within
+  // their own `componentWillUnmount` method.
+  //
+  // @param {Component} component A higher order validation component
   unregisterValidatedComponent(component) {
     if (component.type === 'RadioWrapper') {
       const group = this[_components_].get(name);
@@ -162,13 +162,11 @@ export default class FormManager extends EventEmitter {
     }
   }
 
-  /**
-   * When the validation state changes (true, false, null) on a component.
-   *
-   * @param {String} name                The input's name attribute
-   * @param {Boolean|null} previousState The previous state
-   * @param {Boolean|null} nextState     The next state
-   */
+   // When the validation state changes (true, false, null) on a component.
+   //
+   // @param {String} name                The input's name attribute
+   // @param {Boolean|null} previousState The previous state
+   // @param {Boolean|null} nextState     The next state
   handleValidationChange(name, previousState, nextState) {
     this.state[name] = nextState;
 
@@ -177,9 +175,11 @@ export default class FormManager extends EventEmitter {
   }
 
   /**
-   * Validates every registered field
+   * ### `validate([callback])`
    *
-   * @param {Function} [callback] Called when all fields have been validated
+   * Validates every registered field. Callback is called once all validators
+   * have completed. `validate()` is called automatically when the form is
+   * submitted.
    */
   validate(callback = ()=>{}) {
     this[_isValidating_] = true;

@@ -30,33 +30,20 @@ Get the current validation state for the field `name="fieldName"`. Returns
 ### `getMessage(fieldName) -> String | undefined`
 
 Get the current validation message for the field `name="fieldName"`.
-Returns `undefined` when the field is
 
 
-If any field is currently "valid" (not false, not null).
+### `getIsAnyFieldInvalid() -> Boolean`
 
-@return {Boolean}
-
-
-Register a component for validation. Components call this method within
-their own `componentWillMount` method.
-
-@param {Component} component A higher order validation component
+If any field is currently invalid.
 
 
-Unregister a component for validation. Components call this method within
-their own `componentWillUnmount` method:
+### `getIsValidating() -> Boolean`
 
-@param {Component} component A higher order validation component
-
-
-When the validation state changes (true, false, null) on a component.
-
-@param {String} name                The input's name attribute
-@param {Boolean|null} previousState The previous state
-@param {Boolean|null} nextState     The next state
+If validation functions are currently executing.
 
 
-Validates every registered field
+### `validate([callback])`
 
-@param {Function} [callback] Called when all fields have been validated
+Validates every registered field. Callback is called once all validators
+have completed. `validate()` is called automatically when the form is
+submitted.
