@@ -1,5 +1,10 @@
-import validator from 'validator';
 import invariant from 'invariant';
+import isNull from 'validator/lib/isNull';
+import isLength from 'validator/lib/isLength';
+import isInt from 'validator/lib/isInt';
+import isMobilePhone from 'validator/lib/isMobilePhone';
+import isEmail from 'validator/lib/isEmail';
+import matches from 'validator/lib/matches';
 
 /**
  * # Validators
@@ -90,7 +95,7 @@ import invariant from 'invariant';
  */
 export function createRequired(message='Required') {
   return function required(value, callback) {
-    const valid = validator.isNull(value) === false;
+    const valid = isNull(value) === false;
     const response = valid ? null : message ;
     callback(response);
   }
@@ -107,7 +112,7 @@ export function createMinLength(length, message='Too short') {
   invariant(length >= 0, 'Argument `length` must be at least zero');
 
   return function minLength(value, callback) {
-    const valid = !value || validator.isLength(value, { min: length });
+    const valid = !value || isLength(value, { min: length });
     const response = valid ? null : message ;
     callback(response);
   }
@@ -124,7 +129,7 @@ export function createMaxLength(length, message='Too long') {
   invariant(length >= 1, 'Argument `length` must be at least one');
 
   return function maxLength(value, callback) {
-    const valid = !value || validator.isLength(value, { max: length });
+    const valid = !value || isLength(value, { max: length });
     const response = valid ? null : message ;
     callback(response);
   }
@@ -137,7 +142,7 @@ export function createMaxLength(length, message='Too long') {
  */
 export function createIsInt(message='Not an integer') {
   return function isInt(value, callback) {
-    const valid = !value || validator.isInt(value);
+    const valid = !value || isInt(value);
     const response = valid ? null : message ;
     callback(response);
   }
@@ -153,7 +158,7 @@ export function createIsInt(message='Not an integer') {
  */
 export function createIsPhone(locale='en-US', message='Not a phone number') {
   return function isPhone(value, callback) {
-    const valid = !value || validator.isMobilePhone(value, locale);
+    const valid = !value || isMobilePhone(value, locale);
     const response = valid ? null : message ;
     callback(response);
   }
@@ -169,7 +174,7 @@ export function createIsPhone(locale='en-US', message='Not a phone number') {
  */
 export function createIsEmail(options, message='Invalid email address') {
   return function isEmail(value, callback) {
-    const valid = !value || validator.isEmail(value, options);
+    const valid = !value || isEmail(value, options);
     const response = valid ? null : message ;
     callback(response);
   }
@@ -184,7 +189,7 @@ export function createMatches(pattern, message=`Does not match pattern \`${patte
   invariant(pattern instanceof RegExp, 'Argument `pattern` must be a regular expression');
 
   return function matches(value, callback) {
-    const valid = !value || validator.matches(value, pattern);
+    const valid = !value || matches(value, pattern);
     const response = valid ? null : message ;
     callback(response);
   }
