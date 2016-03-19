@@ -4,23 +4,15 @@
 components in this tool.
 
 
-Stores the *validation state* for all registered components. It's important
-to note that this is not the form values, just whether the current values
-are valid, invalid, or not yet validated.
-
-The value for each key will be:
-
-* `true`: component is valid
-* `false`: component is invalid
-* `null`: component is not yet validated
-
-@type {Object}
+## Methods
 
 
-### `getState(fieldName) -> Boolean | null`
+### `getState([fieldName]) -> Boolean | null`
 
 Get the current validation state for the field `name="fieldName"`. Returns
 `true`, `false`, or `null`.
+
+If `fieldName` is not given, the entire state object is returned.
 
 * `true`: valid
 * `false`: invalid

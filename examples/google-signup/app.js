@@ -36,7 +36,7 @@ class App extends Component {
   handleValidationChange(previousValue, nextValue) {
     // Handle the validation state change on the input.
     this.setState({
-      validation: this.manager.state
+      validation: this.manager.getState()
     });
   }
 

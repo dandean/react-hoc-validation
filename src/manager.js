@@ -3,6 +3,7 @@ import invariant from 'invariant';
 
 const _isValidating_ = Symbol();
 const _components_ = Symbol();
+const _state_ = Symbol();
 
 /**
  * # FormManager
@@ -11,23 +12,7 @@ const _components_ = Symbol();
  * components in this tool.
  */
 export default class FormManager extends EventEmitter {
-  /**
-   * Stores the *validation state* for all registered components. It's important
-   * to note that this is not the form values, just whether the current values
-   * are valid, invalid, or not yet validated.
-   *
-   * The value for each key will be:
-   *
-   * * `true`: component is valid
-   * * `false`: component is invalid
-   * * `null`: component is not yet validated
-   *
-   * @type {Object}
-   */
-  state = {};
-
   validationChangeTimeout = null;
-
   validateOnChange = true;
   validateOnChangeDelay = 500;
   validateOnBlur = true;
@@ -35,28 +20,49 @@ export default class FormManager extends EventEmitter {
   constructor() {
     super();
 
+    // Stores the *validation state* for all registered components. It's important
+    // to note that this is not the form values, just whether the current values
+    // are valid, invalid, or not yet validated.
+    //
+    // The value for each key will be:
+    //
+    // * `true`: component is valid
+    // * `false`: component is invalid
+    // * `null`: component is not yet validated
+    this[_state_] = {};
+
     this[_components_] = new Map([]);
     this[_isValidating_] = false;
 
     this.handleValidationChange = this.handleValidationChange.bind(this);
   }
 
+  /**
+   * ## Methods
+   */
+
   //
   // GETTERS
   // ---------------------------------------------------------------------------
 
   /**
-   * ### `getState(fieldName) -> Boolean | null`
+   * ### `getState([fieldName]) -> Boolean | null`
    *
    * Get the current validation state for the field `name="fieldName"`. Returns
    * `true`, `false`, or `null`.
+   *
+   * If `fieldName` is not given, the entire state object is returned.
    *
    * * `true`: valid
    * * `false`: invalid
    * * `null`: not yet validated
    */
   getState(name) {
-    const state = this.state[name];
+    if (!name) {
+      return this[_state_];
+    }
+
+    const state = this[_state_][name];
     return state === undefined ? null : state ;
   }
 
@@ -67,10 +73,12 @@ export default class FormManager extends EventEmitter {
    */
   getMessage(name) {
     const component = this[_components_].get(name);
-    invariant(Boolean(component), `Field ${name} does not exist`);
 
-    const message = component.getValidationStateMessage();
-    return message;
+    // Component might not yet be registered.
+    if (component) {
+      const message = component.getValidationStateMessage();
+      return message;
+    }
   }
 
   /**
@@ -168,7 +176,7 @@ export default class FormManager extends EventEmitter {
    // @param {Boolean|null} previousState The previous state
    // @param {Boolean|null} nextState     The next state
   handleValidationChange(name, previousState, nextState) {
-    this.state[name] = nextState;
+    this[_state_][name] = nextState;
 
     clearTimeout(this.validationChangeTimeout);
     this.validationChangeTimeout = setTimeout(() => this.emit('change'), 0);
