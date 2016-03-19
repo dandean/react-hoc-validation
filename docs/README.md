@@ -10,7 +10,7 @@ Basic markup taken from one of the examples:
       <input type="text" name="username" id="username" />
     </InputWrapper>
     <span className={usernameMessageClassName}>
-      {this.manager.getFieldValidationMessage('username')}
+      {this.manager.getMessage('username')}
     </span>
     <input type="submit" value="submit" />
   </form>

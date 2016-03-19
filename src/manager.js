@@ -50,7 +50,7 @@ export default class FormManager extends EventEmitter {
    * @param {String} name The name of the field by name attribute
    * @return {Boolean|null} The current validation state
    */
-  getFieldValidationState(name) {
+  getState(name) {
     const state = this.state[name];
     return state === undefined ? null : state ;
   }
@@ -61,7 +61,7 @@ export default class FormManager extends EventEmitter {
    * @param {String} name The name of the field by "name" attribute
    * @return {String} The validation message
    */
-  getFieldValidationMessage(name) {
+  getMessage(name) {
     const component = this[_components_].get(name);
     if (component) {
       return component.getValidationStateMessage();

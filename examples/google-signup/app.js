@@ -53,21 +53,21 @@ class App extends Component {
   }
 
   getDateOfBirthMessage() {
-    const month = this.manager.getFieldValidationMessage('BirthMonth');
-    const day = this.manager.getFieldValidationMessage('BirthDay');
-    const year = this.manager.getFieldValidationMessage('BirthYear');
+    const month = this.manager.getMessage('BirthMonth');
+    const day = this.manager.getMessage('BirthDay');
+    const year = this.manager.getMessage('BirthYear');
     return month || day || year ;
   }
 
   getFullNameMessage() {
-    const first = this.manager.getFieldValidationMessage('FirstName');
-    const last = this.manager.getFieldValidationMessage('LastName');
+    const first = this.manager.getMessage('FirstName');
+    const last = this.manager.getMessage('LastName');
     return first || last ;
   }
 
   render() {
     const errorClass = (name) => {
-      const state = this.manager.getFieldValidationState(name);
+      const state = this.manager.getState(name);
       return state === false ? 'form-error' : '' ;
     }
 
@@ -125,7 +125,7 @@ class App extends Component {
                     </div>
 
                     <div id="username-errormsg-and-suggestions">
-                      <span role="alert" className="errormsg">{this.manager.getFieldValidationMessage('GmailAddress')}</span>
+                      <span role="alert" className="errormsg">{this.manager.getMessage('GmailAddress')}</span>
                       <div id="EmailAddressExistsError" style={{display: "none"}}>
                         This email address already corresponds to a Google Account. Please <a href="https://accounts.google.com/ServiceLogin?continue=https%3A%2F%2Fplus.google.com%2Fcollections%2Ffeatured&amp;dsh=-7331298892027821408">sign in</a> or, if you forgot your password, <a href="https://accounts.google.com/RecoverAccount?continue=https%3A%2F%2Fplus.google.com%2Fcollections%2Ffeatured">reset it</a>.
                       </div>
@@ -140,7 +140,7 @@ class App extends Component {
                         <input ref="password" type="password" name="Passwd" id="Passwd" n="4"/>
                       </InputWrapper>
                     </label>
-                    <span role="alert" className="errormsg">{this.manager.getFieldValidationMessage('Passwd')}</span>
+                    <span role="alert" className="errormsg">{this.manager.getMessage('Passwd')}</span>
                   </div>
 
                   <div className="form-element" id="confirm-password-form-element">
@@ -150,7 +150,7 @@ class App extends Component {
                         <input type="password" name="PasswdAgain" id="PasswdAgain" n="5"/>
                       </InputWrapper>
                     </label>
-                    <span role="alert" className="errormsg">{this.manager.getFieldValidationMessage('PasswdAgain')}</span>
+                    <span role="alert" className="errormsg">{this.manager.getMessage('PasswdAgain')}</span>
                   </div>
 
                   <div className="form-element multi-field birthday" id="birthday-form-element">
@@ -213,7 +213,7 @@ class App extends Component {
                         <strong>I agree to the Google <a target="_blank" id="TosLink" href="https://accounts.google.com/TOS?loc=US&amp;hl=en">Terms of Service</a> and <a target="_blank" id="PrivacyLink" href="https://accounts.google.com/TOS?loc=US&amp;hl=en&amp;privacy=true">Privacy Policy</a></strong>
                       </span>
                     </label>
-                    <span role="alert" className="errormsg">{this.manager.getFieldValidationMessage('TermsOfService')}</span>
+                    <span role="alert" className="errormsg">{this.manager.getMessage('TermsOfService')}</span>
                   </div>
 
                   <div className="form-element" id="extra-tos"></div>

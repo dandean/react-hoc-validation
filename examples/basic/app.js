@@ -32,13 +32,13 @@ class App extends Component {
 
   render() {
     // Get the validation state for our field:
-    const usernameValidationState = this.manager.getFieldValidationState('username');
+    const usernameState = this.manager.getState('username');
 
     // Build a class name:
     const usernameMessageClassName = classnames('message', {
-      valid:        usernameValidationState === true,
-      invalid:      usernameValidationState === false,
-      notvalidated: usernameValidationState === null
+      valid:        usernameState === true,
+      invalid:      usernameState === false,
+      notvalidated: usernameState === null
     });
 
     return (
@@ -50,7 +50,7 @@ class App extends Component {
               <input type="text" name="username" id="username" />
             </InputWrapper>
             <span className={usernameMessageClassName}>
-              {this.manager.getFieldValidationMessage('username')}
+              {this.manager.getMessage('username')}
             </span>
 
             <br />
