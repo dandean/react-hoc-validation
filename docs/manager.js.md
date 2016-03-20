@@ -1,7 +1,9 @@
-# FormManager
+# FormValidationManager
 
-`FormManager` is the central point of coordination between the various
-components in this tool. You provide an instance to your form.
+`FormValidationManager` is the central point of coordination between the
+components in this module. When fields become valid or invalid,
+`FormValidationManager` knows about it, and can give you validation messages
+associated with invalid fields in a form.
 
 ```js
 class Foo extends Component {
@@ -52,6 +54,5 @@ If validation functions are currently executing.
 
 ### `validate([callback])`
 
-Validates every registered field. Callback is called once all validators
-have completed. `validate()` is called automatically when the form is
-submitted.
+Called automatically when the form is submitted. Validates registered
+fields. The callback is executed when all validators have completed.

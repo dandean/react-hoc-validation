@@ -4,12 +4,15 @@ import invariant from 'invariant';
 const _isValidating_ = Symbol();
 const _components_ = Symbol();
 const _state_ = Symbol();
+const _timeout_ = Symbol();
 
 /**
- * # FormManager
+ * # FormValidationManager
  *
- * `FormManager` is the central point of coordination between the various
- * components in this tool. You provide an instance to your form.
+ * `FormValidationManager` is the central point of coordination between the
+ * components in this module. When fields become valid or invalid,
+ * `FormValidationManager` knows about it, and can give you validation messages
+ * associated with invalid fields in a form.
  *
  * ```js
  * class Foo extends Component {
@@ -27,8 +30,7 @@ const _state_ = Symbol();
  * }
  * ```
  */
-export default class FormManager extends EventEmitter {
-  validationChangeTimeout = null;
+export default class FormValidationManager extends EventEmitter {
   validateOnChange = true;
   validateOnChangeDelay = 500;
   validateOnBlur = true;
@@ -194,16 +196,15 @@ export default class FormManager extends EventEmitter {
   handleValidationChange(name, previousState, nextState) {
     this[_state_][name] = nextState;
 
-    clearTimeout(this.validationChangeTimeout);
-    this.validationChangeTimeout = setTimeout(() => this.emit('change'), 0);
+    clearTimeout(this[_timeout_]);
+    this[_timeout_] = setTimeout(() => this.emit('change'), 0);
   }
 
   /**
    * ### `validate([callback])`
    *
-   * Validates every registered field. Callback is called once all validators
-   * have completed. `validate()` is called automatically when the form is
-   * submitted.
+   * Called automatically when the form is submitted. Validates registered
+   * fields. The callback is executed when all validators have completed.
    */
   validate(callback = ()=>{}) {
     this[_isValidating_] = true;
