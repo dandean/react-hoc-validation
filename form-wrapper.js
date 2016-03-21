@@ -18,9 +18,28 @@ var _react = require('react');
 
 var _react2 = _interopRequireDefault(_react);
 
+var _invariant = require('invariant');
+
+var _invariant2 = _interopRequireDefault(_invariant);
+
 var _manager = require('./manager');
 
 var _manager2 = _interopRequireDefault(_manager);
+
+/**
+ * # FormWrapper
+ *
+ * The `<FormWrapper>` component decorates a `<form>` element with default
+ * validation properties and configuration.
+ *
+ * ```html
+ * <FormWrapper manager={formValidationManager} onValidationChange={handleValidationChange}>
+ *   <form>
+ *     Your form controls in here
+ *   </form>
+ * </FormWrapper>
+ * ```
+ */
 
 var FormWrapper = (function (_Component) {
   _inherits(FormWrapper, _Component);
@@ -32,6 +51,45 @@ var FormWrapper = (function (_Component) {
   }
 
   _createClass(FormWrapper, [{
+    key: 'getChildContext',
+    value: function getChildContext() {
+      return {
+        formValidationManager: this.props.manager
+      };
+    }
+  }, {
+    key: 'componentWillMount',
+    value: function componentWillMount() {
+      (0, _invariant2['default'])(this.props.children && this.props.children.type === 'form', 'FormWrapper can only wrap <form> elements');
+
+      this.handleValidationChange = this.handleValidationChange.bind(this);
+      this.props.manager.addListener('change', this.handleValidationChange);
+
+      if (this.props.validateOnChange !== undefined) {
+        this.props.manager.validateOnChange = this.props.validateOnChange;
+      }
+
+      if (this.props.validateOnChangeDelay !== undefined) {
+        this.props.manager.validateOnChangeDelay = this.props.validateOnChangeDelay;
+      }
+
+      if (this.props.validateOnBlur !== undefined) {
+        this.props.manager.validateOnBlur = this.props.validateOnBlur;
+      }
+    }
+  }, {
+    key: 'componentWillUnmount',
+    value: function componentWillUnmount() {
+      this.props.manager.removeListener('change', this.handleValidationChange);
+    }
+  }, {
+    key: 'handleValidationChange',
+    value: function handleValidationChange() {
+      if (this.props.onValidationChange) {
+        this.props.onValidationChange();
+      }
+    }
+  }, {
     key: 'render',
     value: function render() {
       var originalOnSubmit = this.props.children.props.onSubmit;
@@ -53,9 +111,35 @@ var FormWrapper = (function (_Component) {
     }
   }], [{
     key: 'propTypes',
+
+    /**
+     * ## Properties
+     *
+     * The `manager` prop is required. Every other prop in documented in
+     * [standard component props](./README.md#standard-component-props).
+     */
     value: {
       children: _react.PropTypes.element.isRequired,
-      manager: _react.PropTypes.instanceOf(_manager2['default']).isRequired
+
+      /**
+       * ### `manager={FormValidationManager}`
+       *
+       * The manager prop must be an instance of `FormValidationManager`. You must
+       * create this instance yourself, probably in `componentWillMount`, and it
+       * may not be used by more than one `<FormWrapper>`.
+       */
+      manager: _react.PropTypes.instanceOf(_manager2['default']).isRequired,
+
+      validateOnChange: _react.PropTypes.bool,
+      validateOnChangeDelay: _react.PropTypes.number,
+      validateOnBlur: _react.PropTypes.bool,
+      onValidationChange: _react.PropTypes.func
+    },
+    enumerable: true
+  }, {
+    key: 'childContextTypes',
+    value: {
+      formValidationManager: _react.PropTypes.instanceOf(_manager2['default'])
     },
     enumerable: true
   }]);

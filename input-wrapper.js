@@ -32,67 +32,49 @@ var _invariant = require('invariant');
 
 var _invariant2 = _interopRequireDefault(_invariant);
 
+/**
+ * # InputWrapper
+ *
+ * The `<InputWrapper>` component decorates `<input>`, `<textareaa>`, and
+ * `<select>` elements with validation properties and configuration.
+ *
+ * ```html
+ * <InputWrapper validators={[fn]}>
+ *   <input type="text" name="foo" />
+ * </InputWrapper>
+ * ```
+ */
+
 var InputWrapper = (function (_Component) {
   _inherits(InputWrapper, _Component);
 
   _createClass(InputWrapper, null, [{
+    key: 'contextTypes',
+    value: {
+      formValidationManager: _react.PropTypes.instanceOf(_manager2['default']).isRequired
+    },
+
+    /**
+     * ## Props
+     *
+     * All props are documented in [standard component props](./README.md#standard-component-props).
+     */
+    enumerable: true
+  }, {
     key: 'propTypes',
     value: {
-      /**
-       * Because this is a higher order component, only a single child component
-       * is allowed, and it is required.
-       *
-       * @type {Component}
-       */
       children: _react.PropTypes.element.isRequired,
-
-      /**
-       * The FormManager instance, which is required in order to enable validation.
-       *
-       * @type {FormManager}
-       */
-      manager: _react.PropTypes.instanceOf(_manager2['default']).isRequired,
-
-      /**
-       * An array of validation functions. All functions:
-       *
-       * * take `value` as the first argument
-       * * take `callback` as the second argument
-       * * pass true if valid or a string if invalid to the callback
-       *
-       * @type {Array}
-       */
       validators: _react.PropTypes.arrayOf(_react.PropTypes.func),
-
-      /**
-       * If the component's validators should run when the input's value changes.
-       *
-       * @type {Boolean}
-       */
       validateOnChange: _react.PropTypes.bool,
-
-      /**
-       * How long (in milliseconds) to wait after the value has changed before
-       * running validators.
-       *
-       * @type {Number}
-       */
       validateOnChangeDelay: _react.PropTypes.number,
-
-      /**
-       * Handler to call when validation state changes.
-       *
-       * @type {Function}
-       */
+      validateOnBlur: _react.PropTypes.bool,
       onValidationChange: _react.PropTypes.func
     },
     enumerable: true
   }, {
     key: 'defaultProps',
     value: {
-      validators: [],
-      validateOnChange: true,
-      validateOnChangeDelay: 500
+      validators: []
     },
     enumerable: true
   }]);
@@ -107,50 +89,23 @@ var InputWrapper = (function (_Component) {
     _get(Object.getPrototypeOf(InputWrapper.prototype), 'constructor', this).apply(this, args);
     this.state = {
       valid: null,
-      validationMessage: null
+      validationMessage: null,
+      isValidating: false
     };
     this.onChangeTimeout = null;
+    this.validateOnChange = null;
+    this.validateOnChangeDelay = null;
     _events.EventEmitter.call(this);
     this.handleChange = this.handleChange.bind(this);
     this.handleBlur = this.handleBlur.bind(this);
     this.validate = this.validate.bind(this);
   }
 
+  //
+  // GETTERS
+  // ---------------------------------------------------------------------------
+
   _createClass(InputWrapper, [{
-    key: 'componentWillMount',
-    value: function componentWillMount() {
-      var children = this.props.children;
-
-      (0, _invariant2['default'])(children && children.props && children.props.name, 'A child component with a "name" property is required');
-
-      if (children.type === 'input' && children.props.type === 'checkbox') {
-        // Checkbox inputs must have a value attribute set:
-        // https://www.w3.org/TR/html4/interact/forms.html#adef-value-INPUT
-        (0, _invariant2['default'])(children.props && children.props.value, 'Inputs of type checkbox must have a value property');
-      }
-
-      this.props.manager.registerValidatedComponent(this);
-    }
-  }, {
-    key: 'componentWillUnmount',
-    value: function componentWillUnmount() {
-      this.props.manager.unregisterValidatedComponent(this);
-    }
-  }, {
-    key: 'componentWillUpdate',
-    value: function componentWillUpdate(nextProps, nextState) {
-      if (this.state.valid !== nextState.valid) {
-        if (this.props.onValidationChange) {
-          this.props.onValidationChange(this.state.valid, nextState.valid);
-        }
-
-        if (this.listenerCount('validationChange') > 0) {
-          var _name = this.getName();
-          this.emit('validationChange', _name, this.state.valid, nextState.valid);
-        }
-      }
-    }
-  }, {
     key: 'getName',
     value: function getName() {
       return this.props.children.props.name;
@@ -166,6 +121,16 @@ var InputWrapper = (function (_Component) {
       return this.state.validationMessage;
     }
   }, {
+    key: 'getIsValidating',
+    value: function getIsValidating() {
+      return this.state.isValidating;
+    }
+
+    //
+    // VALIDATION INTEGRATION
+    // ---------------------------------------------------------------------------
+
+  }, {
     key: 'handleChange',
     value: function handleChange(event) {
       if (this.state.valid !== null) {
@@ -177,14 +142,14 @@ var InputWrapper = (function (_Component) {
 
       clearTimeout(this.onChangeTimeout);
 
-      if (this.props.validateOnChange) {
-        this.onChangeTimeout = setTimeout(this.validate, this.props.validateOnChangeDelay);
+      if (this.validateOnChange) {
+        this.onChangeTimeout = setTimeout(this.validate, this.validateOnChangeDelay);
       }
     }
   }, {
     key: 'handleBlur',
     value: function handleBlur(event) {
-      if (this.state.valid === null) {
+      if (this.state.valid === null && this.validateOnBlur) {
         this.validate();
       }
     }
@@ -197,9 +162,11 @@ var InputWrapper = (function (_Component) {
 
       // Clear timeout in case validate() was called while a change was queued.
       // This will prevent a potential double validation.
-      if (this.props.validateOnChange) {
+      if (this.validateOnChange || this.validateOnBlur) {
         clearTimeout(this.onChangeTimeout);
       }
+
+      this.setState({ isValidating: true });
 
       // TODO: Should this use `this.props.children.props.value`?
       var element = _reactDom2['default'].findDOMNode(this);
@@ -223,7 +190,8 @@ var InputWrapper = (function (_Component) {
         if (isValid === false || !Boolean(validators[index])) {
           _this.setState({
             valid: isValid,
-            validationMessage: message
+            validationMessage: message,
+            isValidating: false
           });
           callback(isValid, message);
           return;
@@ -232,7 +200,7 @@ var InputWrapper = (function (_Component) {
         validators[index](value, function (result) {
           index++;
 
-          if (result !== true) {
+          if (Boolean(result)) {
             isValid = false;
             message = result;
           }
@@ -242,6 +210,56 @@ var InputWrapper = (function (_Component) {
       };
 
       next();
+    }
+
+    //
+    // REACT LIFECYCLE
+    // ---------------------------------------------------------------------------
+
+  }, {
+    key: 'componentWillMount',
+    value: function componentWillMount() {
+      var children = this.props.children;
+
+      (0, _invariant2['default'])(children && children.props && children.props.name, 'A child component with a "name" property is required');
+
+      if (children.type === 'input' && children.props.type === 'checkbox') {
+        // Checkbox inputs must have a value attribute set:
+        // https://www.w3.org/TR/html4/interact/forms.html#adef-value-INPUT
+        (0, _invariant2['default'])(children.props && children.props.value, 'Inputs of type checkbox must have a value property');
+      }
+
+      var manager = this.context.formValidationManager;
+      manager.registerValidatedComponent(this);
+
+      this.validateOnChange = this.props.validateOnChange || manager.validateOnChange;
+
+      if (this.props.validateOnChangeDelay !== undefined) {
+        this.validateOnChangeDelay = this.props.validateOnChangeDelay;
+      } else {
+        this.validateOnChangeDelay = manager.validateOnChangeDelay;
+      }
+
+      this.validateOnBlur = this.props.validateOnBlur || manager.validateOnBlur;
+    }
+  }, {
+    key: 'componentWillUnmount',
+    value: function componentWillUnmount() {
+      this.context.formValidationManager.unregisterValidatedComponent(this);
+    }
+  }, {
+    key: 'componentWillUpdate',
+    value: function componentWillUpdate(nextProps, nextState) {
+      if (this.state.valid !== nextState.valid) {
+        if (this.props.onValidationChange) {
+          this.props.onValidationChange(this.state.valid, nextState.valid);
+        }
+
+        if (this.listenerCount('validationChange') > 0) {
+          var _name = this.getName();
+          this.emit('validationChange', _name, this.state.valid, nextState.valid);
+        }
+      }
     }
   }, {
     key: 'render',
