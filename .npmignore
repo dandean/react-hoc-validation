@@ -1,0 +1,6 @@
+bin/
+docs/
+examples/
+src/
+.eslintrc
+.gitignore

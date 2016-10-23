@@ -8,7 +8,7 @@ for FILE in $( ls src/*.js ); do
   echo "[$PROCESS] $FILE..." 1>&2;
 
   # Get the .js file's basename:
-  BASENAME=$( echo $FILE | cut -d "/" -f2)
+  BASENAME=$(echo $FILE | cut -d "/" -f2)
 
   # Compile the file with babel, saving the result to the root directory:
   ./node_modules/.bin/babel $FILE --out-file $BASENAME

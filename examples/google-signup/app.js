@@ -6,6 +6,7 @@ import {
   FormValidationManager,
   FormWrapper,
   InputWrapper,
+  Message,
   validators
 } from 'react-hoc-validation';
 
@@ -125,7 +126,9 @@ class App extends Component {
                     </div>
 
                     <div id="username-errormsg-and-suggestions">
-                      <span role="alert" className="errormsg">{this.manager.getMessage('GmailAddress')}</span>
+                      <span role="alert" className="errormsg">
+                        <Message name="GmailAddress" />
+                      </span>
                       <div id="EmailAddressExistsError" style={{display: "none"}}>
                         This email address already corresponds to a Google Account. Please <a href="https://accounts.google.com/ServiceLogin?continue=https%3A%2F%2Fplus.google.com%2Fcollections%2Ffeatured&amp;dsh=-7331298892027821408">sign in</a> or, if you forgot your password, <a href="https://accounts.google.com/RecoverAccount?continue=https%3A%2F%2Fplus.google.com%2Fcollections%2Ffeatured">reset it</a>.
                       </div>
@@ -140,7 +143,9 @@ class App extends Component {
                         <input ref="password" type="password" name="Passwd" id="Passwd" n="4"/>
                       </InputWrapper>
                     </label>
-                    <span role="alert" className="errormsg">{this.manager.getMessage('Passwd')}</span>
+                    <span role="alert" className="errormsg">
+                      <Message name="Passwd" />
+                    </span>
                   </div>
 
                   <div className="form-element" id="confirm-password-form-element">
@@ -150,7 +155,9 @@ class App extends Component {
                         <input type="password" name="PasswdAgain" id="PasswdAgain" n="5"/>
                       </InputWrapper>
                     </label>
-                    <span role="alert" className="errormsg">{this.manager.getMessage('PasswdAgain')}</span>
+                    <span role="alert" className="errormsg">
+                      <Message name="PasswdAgain" />
+                    </span>
                   </div>
 
                   <div className="form-element multi-field birthday" id="birthday-form-element">
@@ -213,7 +220,9 @@ class App extends Component {
                         <strong>I agree to the Google <a target="_blank" id="TosLink" href="https://accounts.google.com/TOS?loc=US&amp;hl=en">Terms of Service</a> and <a target="_blank" id="PrivacyLink" href="https://accounts.google.com/TOS?loc=US&amp;hl=en&amp;privacy=true">Privacy Policy</a></strong>
                       </span>
                     </label>
-                    <span role="alert" className="errormsg">{this.manager.getMessage('TermsOfService')}</span>
+                    <span role="alert" className="errormsg">
+                      <Message name="TermsOfService" />
+                    </span>
                   </div>
 
                   <div className="form-element" id="extra-tos"></div>

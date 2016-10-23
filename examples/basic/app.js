@@ -6,6 +6,7 @@ import {
   FormValidationManager,
   FormWrapper,
   InputWrapper,
+  Message,
   validators
 } from 'react-hoc-validation';
 
@@ -50,7 +51,7 @@ class App extends Component {
               <input type="text" name="username" id="username" />
             </InputWrapper>
             <span className={usernameMessageClassName}>
-              {this.manager.getMessage('username')}
+              <Message name="username" />
             </span>
 
             <br />
