@@ -6,7 +6,7 @@ import RadioGroup from './radio-group';
 import RadioWrapper from './radio-wrapper';
 import * as validators from './validators';
 
-export default {
+export {
   FormValidationManager,
   FormWrapper,
   InputWrapper,

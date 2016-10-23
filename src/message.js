@@ -10,27 +10,21 @@ import FormValidationManager from './manager';
  * <Message name="username" />
  * ```
  */
-export default class Message extends Component {
-  static contextTypes = {
-    formValidationManager: PropTypes.instanceOf(FormValidationManager).isRequired
-  };
+export default function Message(props, context) {
+  const message = context.formValidationManager.getMessage(props.name);
 
-  /**
-   * ## Props
-   *
-   * All props are documented in [standard component props](./README.md#standard-component-props).
-   */
-  static propTypes = {
-    name: PropTypes.string.isRequired
-  };
-
-  render() {
-    const message = this.context.formValidationManager.getMessage(this.props.name);
-
-    if (message) {
-      return <span>{message}</span>
-    }
-
-    return null;
+  if (message) {
+    return <span>{message}</span>
   }
+
+  {/* in react 15 this can be `null` */}
+  return <noscript />;
 }
+
+Message.contextTypes = {
+  formValidationManager: PropTypes.instanceOf(FormValidationManager).isRequired
+};
+
+Message.propTypes = {
+  name: PropTypes.string.isRequired
+};
