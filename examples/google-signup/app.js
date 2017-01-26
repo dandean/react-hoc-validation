@@ -97,18 +97,18 @@ class App extends Component {
                       <label id="firstname-label" className="firstname">
                         <strong>First name</strong>
                         <InputWrapper validators={[required]}>
-                          <input className={errorClass('FirstName')} type="text" name="FirstName" id="FirstName" spellCheck="false" n="1" placeholder="First" />
+                          <input className={errorClass('FirstName')} type="text" name="FirstName" id="FirstName" spellCheck="false" placeholder="First" />
                         </InputWrapper>
                       </label>
-                      
+
                       <label id="lastname-label" className="lastname">
                         <strong>Last name</strong>
                         <InputWrapper validators={[required]}>
-                          <input className={errorClass('LastName')} type="text" name="LastName" id="LastName" spellCheck="false" n="2" placeholder="Last" />
+                          <input className={errorClass('LastName')} type="text" name="LastName" id="LastName" spellCheck="false" placeholder="Last" />
                         </InputWrapper>
                       </label>
                     </fieldset>
-    
+
                     <span role="alert" className="errormsg">{this.getFullNameMessage()}</span>
                   </div>
 
@@ -116,11 +116,11 @@ class App extends Component {
                     <label id="gmail-address-label">
                       <strong>Choose your username</strong>
                       <InputWrapper validators={[required, username, userNameMinLength]}>
-                        <input className={errorClass('GmailAddress')} type="text" maxLength="30" autoComplete="off" name="GmailAddress" id="GmailAddress" spellCheck="false" n="3" />
+                        <input className={errorClass('GmailAddress')} type="text" maxLength="30" autoComplete="off" name="GmailAddress" id="GmailAddress" spellCheck="false" />
                       </InputWrapper>
                       <span className="atgmail">@gmail.com</span>
                     </label>
-      
+
                     <div className="linkmsg">
                       <a href="" tabIndex="0" id="signup-without-gmail-link">I prefer to use my current email address</a>
                     </div>
@@ -140,7 +140,7 @@ class App extends Component {
                     <label id="password-label">
                       <strong>Create a password</strong>
                       <InputWrapper validators={[required]}>
-                        <input ref="password" type="password" name="Passwd" id="Passwd" n="4"/>
+                        <input ref="password" type="password" name="Passwd" id="Passwd"/>
                       </InputWrapper>
                     </label>
                     <span role="alert" className="errormsg">
@@ -152,7 +152,7 @@ class App extends Component {
                     <label id="confirm-password-label">
                       <strong>Confirm your password</strong>
                       <InputWrapper validators={[required, this.passwordConfirmation]}>
-                        <input type="password" name="PasswdAgain" id="PasswdAgain" n="5"/>
+                        <input type="password" name="PasswdAgain" id="PasswdAgain"/>
                       </InputWrapper>
                     </label>
                     <span role="alert" className="errormsg">
@@ -206,7 +206,7 @@ class App extends Component {
                   <div className="form-element recovery-email" id="recovery-email-form-element">
                     <label id="recovery-email-label">
                       <strong>Your current email address</strong>
-                      <input type="text" name="RecoveryEmailAddress" id="RecoveryEmailAddress" spellCheck="false" n="6"/>
+                      <input type="text" name="RecoveryEmailAddress" id="RecoveryEmailAddress" spellCheck="false"/>
                     </label>
                     <span role="alert" className="errormsg" id="errormsg_0_RecoveryEmailAddress"></span>
                   </div>

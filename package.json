@@ -19,8 +19,8 @@
     "validator": "^6.2.1"
   },
   "peerDependencies": {
-    "react": "^0.14",
-    "react-dom": "^0.14"
+    "react": "^15.4.2",
+    "react-dom": "^15.4.2"
   },
   "devDependencies": {
     "babel-cli": "^6.16.0",
