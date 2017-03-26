@@ -1,5 +1,5 @@
 import invariant from 'invariant';
-import isNull from 'validator/lib/isNull';
+import isEmpty from 'validator/lib/isEmpty';
 import isLength from 'validator/lib/isLength';
 import isInt from 'validator/lib/isInt';
 import isMobilePhone from 'validator/lib/isMobilePhone';
@@ -95,7 +95,7 @@ import matches from 'validator/lib/matches';
  */
 export function createRequired(message='Required') {
   return function required(value, callback) {
-    const valid = isNull(value) === false;
+    const valid = isEmpty(value) === false;
     const response = valid ? null : message ;
     callback(response);
   }
